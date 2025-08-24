@@ -1,3 +1,5 @@
+This is a fork of Polished Crystal that is made solely for testing purposes. Go to the original Polished Crystal page to get the actual game. 
+
 # Pokémon Polished Crystal
 
 This is a custom Pokémon game based on [the Pokémon Crystal disassembly](https://github.com/pret/pokecrystal).
