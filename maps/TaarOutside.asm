@@ -1,12 +1,7 @@
-object_const_def
-
-TaarOutside_MapScripts:
+TaarOutside_MapScriptHeader:
     def_scene_scripts
 
     def_callbacks
-
-TaarOutside_MapEvents:
-    db 0, 0 ; filler
 
     def_warp_events
 
