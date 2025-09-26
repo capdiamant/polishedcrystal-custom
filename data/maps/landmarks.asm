@@ -152,6 +152,7 @@ Landmarks:
 	landmark  76, 116, ValenciaIslandName
 	landmark 132, 100, NavelRockName
 	landmark  24, 120, FarawayIslandName
+	landmark  10,  10, TaarOutsideName
 	assert_table_length NUM_LANDMARKS
 
 NewBarkTownName:       rawchar "New Bark¯Town@"
@@ -298,4 +299,5 @@ FarawayIslandName:     rawchar "Faraway¯Island@"
 SinjohRuinsName:       rawchar "Sinjoh¯Ruins@"
 MystriStageName:       rawchar "Mystri¯Stage@"
 CinnabarLabName:       rawchar "Pokémon¯Lab@"
+TaarOutsideName:	   rawchar "TAAR¯Outside@"
 SpecialMapName:        rawchar "?@"
