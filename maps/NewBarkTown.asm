@@ -10,7 +10,7 @@ NewBarkTown_MapScriptHeader:
 	warp_event  3, 11, PLAYERS_NEIGHBORS_HOUSE, 1
 	warp_event 11, 13, LYRAS_HOUSE_1F, 1
 	warp_event 10,  2, ELMS_HOUSE, 2
-	warp_event 11,  7, TAAR_OUTSIDE, 1
+	warp_event 11,  7, NEW_TOWNHALL, 1
 
 	def_coord_events
 	coord_event  1,  8, 0, NewBarkTown_TeacherStopsYouTrigger1

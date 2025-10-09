@@ -149,7 +149,10 @@ DEF SHAMOUTI_LANDMARK EQU const_value
 	const NAVEL_ROCK         ; 8f
 	const FARAWAY_ISLAND     ; 90
 DEF TAAR_LANDMARK EQU const_value
-	const TAAR_OUTSIDE       ; WHATS AFTER 90?
+	const TAAR_OUTSIDE       ; 91
+DEF NEW_ISLAND_LANDMARK EQU const_value
+	const NEW_TOWNHALL	     ; 92
+
 DEF NUM_LANDMARKS EQU const_value
 
 ; used in CaughtData

@@ -55,6 +55,7 @@ MapGroupPointers::
 	dw MapGroup36
 	dw MapGroup37
 	dw MapGroup38
+	dw MapGroup39
 	assert_table_length NUM_MAP_GROUPS
 
 MapGroup1:
@@ -738,3 +739,6 @@ MapGroup37:
 
 MapGroup38:
 	map TaarOutside, TILESET_JOHTO_OVERCAST, ROUTE, SIGN_ROUTE, TAAR_OUTSIDE, MUSIC_UNION_CAVE, 0, PALETTE_AUTO
+
+MapGroup39:
+	map NewTownhall, TILESET_FOREST, TOWN, SIGN_CITY, NEW_TOWNHALL, MUSIC_PALLET_TOWN, 0, PALETTE_AUTO

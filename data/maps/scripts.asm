@@ -1082,4 +1082,8 @@ SECTION "Taar Scripts", ROMX
 
 INCLUDE "maps/TaarOutside.asm"
 
+SECTION "New Townhall Scripts", ROMX
+
+INCLUDE "maps/NewTownhall.asm"
+
 ENDSECTION

@@ -708,4 +708,7 @@ ENDM
 	newgroup													 ; 38
 	map_const TAAR_OUTSIDE,							 	  11, 21 ;  1
 
-DEF NUM_MAP_GROUPS EQU const_value ; 38
+	newgroup													 ; 39
+	map_const NEW_TOWNHALL,							  	  22, 18 ;  1
+
+DEF NUM_MAP_GROUPS EQU const_value ; 39

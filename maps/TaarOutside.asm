@@ -4,7 +4,7 @@ TaarOutside_MapScriptHeader:
     def_callbacks
 
     def_warp_events
-    warp_event  5, 5, NEW_BARK_TOWN, 6
+    ; warp_event  5, 5, NEW_BARK_TOWN, 6 ; this warp being used for NewTownhall
 
     def_coord_events
 

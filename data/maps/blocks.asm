@@ -1925,4 +1925,8 @@ SECTION "TaarOutside_BlockData", ROMX
 TaarOutside_BlockData:
 	INCBIN "maps/TaarOutside.ablk.lz"
 
+SECTION "NewTownhall_BlockData", ROMX
+NewTownhall_BlockData:
+	INCBIN "maps/NewTownhall.ablk.lz"
+
 ENDSECTION
