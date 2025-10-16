@@ -46,6 +46,8 @@ SpawnPoints:
 	spawn VALENCIA_ISLAND,             8, 14
 	spawn NAVEL_ROCK_OUTSIDE,         12, 23
 
+	spawn NEW_TOWNHALL,				  30, 12
+
 	spawn N_A,                        -1, -1
 
 	assert_table_length NUM_SPAWNS + 1
