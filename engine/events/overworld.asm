@@ -821,6 +821,8 @@ FlyFunction:
 	ldh [rWBK], a
 	xor a
 	ld [wPalFadeDelayFrames], a
+	ld [wPalFadeTotalSteps], a
+	ld [wPalFadeStepValue], a
 	pop af
 	ldh [rWBK], a
 	ld hl, wPalFlags
@@ -1311,7 +1313,7 @@ Script_UsedWhirlpool:
 	waitsfx
 
 Script_AutoWhirlpool:
-	playsound SFX_SURF
+	playsound SFX_OW_WHIRLPOOL
 	readvar VAR_FACING
 	ifequalfwd UP, .Up
 	ifequalfwd DOWN, .Down

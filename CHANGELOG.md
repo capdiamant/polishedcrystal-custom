@@ -8,15 +8,61 @@
 
 ***Note: The following changelog may contain spoilers.***
 
+## v3.2.3
+
+Critical hotfix release.
+
+This update addresses a battle engine game crash.
+
+### Fixes
+- Fix Flare Blitz crashing the game when called by Metronome or Sleep Talk
+
+
+## v3.2.2
+
+Hotfix release.
+
+This update changes the link version, meaning you cannot battle with game versions older than 3.2.2.
+
+### Additions
+- New Marowak sprite
+
+### Changes
+- Fly can no longer be forgotten if you don't carry the HM
+- Battle transistions are no longer too fast
+- Update Wooper's sprite
+- Shorten sound effect for crossing whirlpools
+
+### Fixes
+
+- Fixed room service not working as it should
+- Toxic should now be fully fixed
+- Fix some spelling mistakes
+- Fix Route 43 map during rain
+- Fix buggy experience gain above 65535
+- Fix rare NPC display bug while using Fly in the overworld
+- Nickname UI now displays proper gender and Shininess
+- Fix bike music sometimes not playing correctly
+- Amy & Mimi's party is now always level 13
+- You can no longer miss out on Macho Brace within SS Aqua
+
 ## v3.2.1
 
 Hotfix release.
+
+### Additions
+- Added Alolan Dugtrio backsprite
 
 ### Changes
 - Temporarily unable to trade pokemon holding mail in link trades to avoid mail corruption. Will be fixed in a future release.
 - Thief and Pickpocket can now put items into bag if one is already held.
 - Turn the player away from the bed in the Fast Ship after resting so they don't accidentally talk to the bed immediately after healing.
 - Turn the player away from the train attendant when arriving in Saffron/Goldenrod so the player doesn't re-initiate the arrival dialogue.
+- Talking to an Pokemon in the overworld sets them seen in the pokedex.
+- Updated Piloswine and Skarmory's back sprites.
+- Updated Para's front animation sprite.
+- If a Pokemon knows a HM that you don't have, and that HM is Surf, Strength, or Whirlpool, you cannot forget the HM. This is to reduce chances of softlock.
+- Made Dance Theater slightly larger to accomodate it's popularity (Resolves issue with sprite "pop in")
 
 ### Fixes
 
@@ -37,6 +83,12 @@ Hotfix release.
 - Fixed pronouns for Blanche in RocketHideout.
 - Fix blaine text corruption when fading out of battle.
 - Removed arbitrary delay when loading a game.
+- Fixed extraneous visual artifact in Kingdra backsprite.
+- Fixed lift key re-appearing after pickup.
+- Fixed overworld weather animations when using brick break to smash an overworld rock.
+- Fixed Psychic Inver corrupt parties
+- Fixed Unnerve ability prematurely switching the turn.
+- Fixed a crash when Trading and using the Summary Screen
 
 ## v3.2.0
 
