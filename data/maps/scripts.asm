@@ -1086,4 +1086,7 @@ SECTION "New Townhall Scripts", ROMX
 
 INCLUDE "maps/NewTownhall.asm"
 
+SECTION "New THKiriJalan Scripts", ROMX
+INCLUDE "maps/NewTHKiri.asm"
+
 ENDSECTION

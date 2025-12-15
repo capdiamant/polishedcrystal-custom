@@ -1929,4 +1929,8 @@ SECTION "NewTownhall_BlockData", ROMX
 NewTownhall_BlockData:
 	INCBIN "maps/NewTownhall.ablk.lz"
 
+SECTION "NewTHKiri_BlockData", ROMX
+NewTHKiri_BlockData:
+	INCBIN "maps/NewTHKiri.ablk.lz"
+
 ENDSECTION

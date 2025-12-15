@@ -152,6 +152,7 @@ DEF TAAR_LANDMARK EQU const_value
 	const TAAR_OUTSIDE       ; 91
 DEF NEW_ISLAND_LANDMARK EQU const_value
 	const NEW_TOWNHALL	     ; 92
+	const NEW_TH_KIRI	     ; 93
 
 DEF NUM_LANDMARKS EQU const_value
 

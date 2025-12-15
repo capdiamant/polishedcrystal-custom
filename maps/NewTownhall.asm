@@ -6,6 +6,7 @@ NewTownhall_MapScriptHeader:
 
     def_warp_events
     warp_event 29, 11, NEW_BARK_TOWN, 6
+    ; warp_event 13, 17, NEW_TH_KIRI, 1
 
     def_coord_events
 

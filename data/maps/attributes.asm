@@ -426,7 +426,11 @@ ENDM
 
 	map_attributes TaarOutside, TAAR_OUTSIDE, $5, 0
 
-	map_attributes NewTownhall, NEW_TOWNHALL, $45, 0
+	map_attributes NewTownhall, NEW_TOWNHALL, $45, WEST
+	connection west, NewTHKiri, NEW_TH_KIRI, 6
+
+	map_attributes NewTHKiri, NEW_TH_KIRI, $45, EAST
+	connection east, NewTownhall, NEW_TOWNHALL, -6 
 
 	map_attributes SproutTower1F, SPROUT_TOWER_1F, $0, 0
 	map_attributes SproutTower2F, SPROUT_TOWER_2F, $0, 0

@@ -710,5 +710,6 @@ ENDM
 
 	newgroup													 ; 39
 	map_const NEW_TOWNHALL,							  	  22, 18 ;  1
+	map_const NEW_TH_KIRI,							  	  18,  9 ;  2
 
 DEF NUM_MAP_GROUPS EQU const_value ; 39
