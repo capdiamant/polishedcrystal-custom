@@ -155,6 +155,7 @@ Landmarks:
 	landmark  10,  10, TaarOutsideName
 	landmark  20,  10, NewTownhallName
 	landmark  30,  30, NewTHKiriName
+	landmark  30,  10, NewTHKiriBawahName
 	assert_table_length NUM_LANDMARKS
 
 NewBarkTownName:       rawchar "New Bark¯Town@"
@@ -304,4 +305,5 @@ CinnabarLabName:       rawchar "Pokémon¯Lab@"
 TaarOutsideName:	   rawchar "TAAR¯Outside@"
 NewTownhallName:	   rawchar "New¯Townhall@"
 NewTHKiriName:         rawchar "Jalan¯TH¯Kiri@"
+NewTHKiriBawahName:    rawchar "Jalan¯TH¯KiriBwh@"
 SpecialMapName:        rawchar "?@"

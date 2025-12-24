@@ -1933,4 +1933,8 @@ SECTION "NewTHKiri_BlockData", ROMX
 NewTHKiri_BlockData:
 	INCBIN "maps/NewTHKiri.ablk.lz"
 
+SECTION "NewTHKiriBawah_BlockData", ROMX
+NewTHKiriBawah_BlockData:
+	INCBIN "maps/NewTHKiriBawah.ablk.lz"
+
 ENDSECTION
