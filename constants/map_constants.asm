@@ -706,11 +706,8 @@ ENDM
 	map_const ECRUTEAK_SHRINE_INSIDE,                      6,  6 ;  2
 
 	newgroup													 ; 38
-	map_const TAAR_OUTSIDE,							 	  11, 21 ;  1
-
-	newgroup													 ; 39
 	map_const NEW_TOWNHALL,							  	  22, 18 ;  1
 	map_const NEW_TH_KIRI,							  	  18,  9 ;  2
 	map_const NEW_TH_KIRI_BAWAH,						  20, 18 ;  3
 
-DEF NUM_MAP_GROUPS EQU const_value ; 39
+DEF NUM_MAP_GROUPS EQU const_value ; 38

@@ -424,8 +424,6 @@ ENDM
 	map_attributes RuggedRoadSouth, RUGGED_ROAD_SOUTH, $71, NORTH
 	connection north, RuggedRoadNorth, RUGGED_ROAD_NORTH, 0
 
-	map_attributes TaarOutside, TAAR_OUTSIDE, $5, 0
-
 	map_attributes NewTownhall, NEW_TOWNHALL, $43, WEST
 	connection west, NewTHKiri, NEW_TH_KIRI, 6
 

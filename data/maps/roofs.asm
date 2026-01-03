@@ -40,7 +40,6 @@ MapGroupRoofs:
 	db -1            ; 35
 	db ROOF_VIOLET   ; 36 (Rugged Road)
 	db ROOF_STATUE   ; 37 (Ecruteak Shrine)
-	db ROOF_NEW_BARK ; 38 (Taar Outside)
-	db -1			 ; 39 (New Townhall)
+	db -1			 ; 38 (New Townhall)
 	assert_table_length NUM_MAP_GROUPS + 1
 	
