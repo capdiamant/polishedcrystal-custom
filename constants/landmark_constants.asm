@@ -132,7 +132,7 @@ DEF KANTO_LANDMARK EQU const_value
 	const INDIGO_PLATEAU     ; 7f
 	const ROUTE_28           ; 80
 	const CINNABAR_LAB       ; 81
-DEF SHAMOUTI_LANDMARK EQU const_value
+DEF NEW_ISLAND_LANDMARK EQU const_value
 	const SHAMOUTI_ISLAND    ; 82
 	const BEAUTIFUL_BEACH    ; 83
 	const ROCKY_BEACH        ; 84
@@ -148,10 +148,9 @@ DEF SHAMOUTI_LANDMARK EQU const_value
 	const VALENCIA_ISLAND    ; 8e
 	const NAVEL_ROCK         ; 8f
 	const FARAWAY_ISLAND     ; 90
-DEF NEW_ISLAND_LANDMARK EQU const_value
-	const NEW_TOWNHALL	     ; 92
-	const NEW_TH_KIRI	     ; 93
-	const NEW_TH_KIRI_BAWAH	 ; 94
+	const NEW_TOWNHALL	     ; 91
+	const NEW_TH_KIRI	     ; 92
+	const NEW_TH_KIRI_BAWAH	 ; 93
 
 DEF NUM_LANDMARKS EQU const_value
 
@@ -162,5 +161,5 @@ DEF LANDMARK_EVENT EQU $ff
 	const_def
 	const JOHTO_REGION  ; 0
 	const KANTO_REGION  ; 1
-	const ORANGE_REGION ; 2
+	const NEW_ISLAND_REGION ; 2
 DEF NUM_REGIONS EQU const_value

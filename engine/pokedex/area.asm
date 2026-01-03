@@ -75,7 +75,7 @@ _Pokedex_Area:
 	ld hl, DexTilemap_Kanto
 	dec d
 	jr z, .got_tilemap
-	ld hl, DexTilemap_Orange
+	ld hl, DexTilemap_Orange	; INGAT KENA TUKAR
 	dec d
 	jr z, .got_tilemap
 	ld hl, DexTilemap_Johto
@@ -180,8 +180,8 @@ _Pokedex_Area:
 	pop hl
 	jr z, .loopback_area_mode
 
-	; If we're switching to Orange Islands, check if we've visited it.
-	cp ORANGE_REGION << 4
+	; If we're switching to New Islands, check if we've visited it.
+	cp NEW_ISLAND_REGION << 4
 	jr nz, .cycle_area
 	push hl
 	ld hl, wStatusFlags2
@@ -273,7 +273,7 @@ Pokedex_ReloadValidLocations:
 	jr z, .finish
 
 	; Check if we have unlocked the region
-	cp ORANGE_REGION
+	cp NEW_ISLAND_REGION
 	jr nz, .check_kanto
 	push hl
 	ld hl, wStatusFlags2
@@ -492,13 +492,13 @@ Pokedex_GetAreaOAM:
 
 	ldh a, [hPokedexAreaMode]
 	and DEXAREA_REGION_MASK
-	cp ORANGE_REGION << 4
+	cp NEW_ISLAND_REGION << 4
 	lb de, 1, 7
 	lb hl, 3, $0b
 	lb bc, 115, 143
-	jr nz, .not_orange
+	jr nz, .not_newisland
 	ld b, 107
-.not_orange
+.not_newisland
 	call Pokedex_WriteOAM
 	ld d, 1
 	ld l, $11
@@ -683,11 +683,11 @@ Pokedex_SetWildLandmark:
 	sub c
 	jr c, .got_landmark
 	inc b ; KANTO_REGION
-	ld c, SHAMOUTI_LANDMARK - KANTO_LANDMARK
+	ld c, NEW_ISLAND_LANDMARK - KANTO_LANDMARK
 	sub c
 	jr c, .got_landmark
 	ld c, 0
-	inc b ; ORANGE_REGION
+	inc b ; NEW_ISLAND_REGION
 .got_landmark
 	add c
 	ret

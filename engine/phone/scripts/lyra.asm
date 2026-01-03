@@ -12,10 +12,10 @@ LyraPhoneScript:
 	getstring .PokemonLeague, STRING_BUFFER_4
 .got_landmark
 	farwritetext LyraPhoneLandmarkText
-	ifless SHAMOUTI_LANDMARK, .not_shamouti
+	ifless NEW_ISLAND_LANDMARK, .not_newisland
 	farwritetext LyraPhoneIslandsText
 	sjumpfwd .landmark_done
-.not_shamouti
+.not_newisland
 	ifless KANTO_LANDMARK, .not_kanto
 	farwritetext LyraPhoneKantoText
 	sjumpfwd .landmark_done

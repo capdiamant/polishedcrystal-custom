@@ -78,7 +78,7 @@ PokeCenterSpecialCase:
 	; Shamouti has the default orange floors
 	call RegionCheck
 	ld a, e
-	cp ORANGE_REGION
+	cp NEW_ISLAND_REGION
 	jr z, .done
 	; Kanto has blue floors
 	ld hl, wBGPals1 palette PAL_BG_WATER

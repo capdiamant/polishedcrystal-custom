@@ -141,7 +141,7 @@ PlayBikeMusic:
 	cp KANTO_REGION
 	ret z
 	ld e, MUSIC_BICYCLE_RSE
-	cp ORANGE_REGION
+	cp NEW_ISLAND_REGION
 	ret z
 	ld e, MUSIC_BICYCLE
 	ret
@@ -435,7 +435,7 @@ GetPlayerStateMusic:
 	cp KANTO_REGION
 	ret z
 	ld e, MUSIC_SURF_HOENN
-	cp ORANGE_REGION
+	cp NEW_ISLAND_REGION
 	ret z
 	ld e, MUSIC_SURF
 	ret

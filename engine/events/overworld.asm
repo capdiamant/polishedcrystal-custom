@@ -675,12 +675,12 @@ CheckFlyAllowedOnMap:
 ; returns z is fly is allowed
 	call RegionCheck
 	ld a, e
-	cp ORANGE_REGION
-	jr nz, .not_orange
+	cp NEW_ISLAND_REGION
+	jr nz, .not_newisland
 	ld a, [wVisitedSpawns + SPAWN_SHAMOUTI / 8]
 	bit SPAWN_SHAMOUTI % 8, a
 	jr z, .no_fly
-.not_orange
+.not_newisland
 	call GetMapEnvironment
 	call CheckOutdoorMap
 	ret z

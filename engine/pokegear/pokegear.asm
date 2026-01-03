@@ -10,21 +10,21 @@ DEF PHONE_DISPLAY_HEIGHT EQU 4
 
 ; PokegearJumptable.Jumptable indexes
 	const_def
-	const POKEGEARSTATE_CLOCKINIT       ; 0
-	const POKEGEARSTATE_CLOCKJOYPAD     ; 1
-	const POKEGEARSTATE_MAPCHECKREGION  ; 2
-	const POKEGEARSTATE_JOHTOMAPINIT    ; 3
-	const POKEGEARSTATE_JOHTOMAPJOYPAD  ; 4
-	const POKEGEARSTATE_KANTOMAPINIT    ; 5
-	const POKEGEARSTATE_KANTOMAPJOYPAD  ; 6
-	const POKEGEARSTATE_ORANGEMAPINIT   ; 7
-	const POKEGEARSTATE_ORANGEMAPJOYPAD ; 8
-	const POKEGEARSTATE_PHONEINIT       ; 9
-	const POKEGEARSTATE_PHONEJOYPAD     ; a
-	const POKEGEARSTATE_MAKEPHONECALL   ; b
-	const POKEGEARSTATE_FINISHPHONECALL ; c
-	const POKEGEARSTATE_RADIOINIT       ; d
-	const POKEGEARSTATE_RADIOJOYPAD     ; e
+	const POKEGEARSTATE_CLOCKINIT       	; 0
+	const POKEGEARSTATE_CLOCKJOYPAD     	; 1
+	const POKEGEARSTATE_MAPCHECKREGION  	; 2
+	const POKEGEARSTATE_JOHTOMAPINIT    	; 3
+	const POKEGEARSTATE_JOHTOMAPJOYPAD  	; 4
+	const POKEGEARSTATE_KANTOMAPINIT    	; 5
+	const POKEGEARSTATE_KANTOMAPJOYPAD  	; 6
+	const POKEGEARSTATE_NEWISLANDMAPINIT   	; 7
+	const POKEGEARSTATE_NEWISLANDMAPJOYPAD 	; 8
+	const POKEGEARSTATE_PHONEINIT       	; 9
+	const POKEGEARSTATE_PHONEJOYPAD     	; a
+	const POKEGEARSTATE_MAKEPHONECALL   	; b
+	const POKEGEARSTATE_FINISHPHONECALL 	; c
+	const POKEGEARSTATE_RADIOINIT       	; d
+	const POKEGEARSTATE_RADIOJOYPAD     	; e
 
 PokeGear:
 	ld hl, wOptions1
@@ -226,8 +226,8 @@ InitPokegearTilemap:
 	cp 5 ; Kanto
 	call z, TownMapKantoFlips
 	ld a, [wJumptableIndex]
-	cp 7 ; Orange
-	call z, TownMapOrangeFlips
+	cp 7 ; New Island
+	call z, TownMapNewIslandFlips
 .not_town_map
 	ld a, [wPokegearMapRegion]
 	and a
@@ -387,7 +387,7 @@ PokegearJumptable:
 	dw PokegearMap_Init
 	dw PokegearMap_KantoMap
 	dw PokegearMap_Init
-	dw PokegearMap_OrangeMap
+	dw PokegearMap_NewIslandMap
 	dw PokegearPhone_Init
 	dw PokegearPhone_Joypad
 	dw PokegearPhone_MakePhoneCall
@@ -485,15 +485,15 @@ Pokegear_UpdateClock:
 
 PokegearMap_CheckRegion:
 	ld a, [wPokegearMapPlayerIconLandmark]
-	cp SHAMOUTI_LANDMARK
-	jr nc, .orange
+	cp NEW_ISLAND_LANDMARK
+	jr nc, .newisland
 	cp KANTO_LANDMARK
 	; a = carry ? 3 (johto) : 5 (kanto)
 	sbc a
 	sbc -5
 	jr .done
-.orange
-	ld a, POKEGEARSTATE_ORANGEMAPINIT
+.newisland
+	ld a, POKEGEARSTATE_NEWISLANDMAPINIT
 .done
 	ld [wJumptableIndex], a
 	jmp ExitPokegearRadio_HandleMusic
@@ -513,7 +513,7 @@ PokegearMap_Init:
 	and a
 	jr z, .no_fly
 	ld a, [wPokegearMapPlayerIconLandmark]
-	cp SHAMOUTI_LANDMARK
+	cp NEW_ISLAND_LANDMARK
 	depixel 18, 12, 0, 0
 	jr nc, .got_coords
 	ld e, 13 * 8 ; depixel 18, 13, 0, 0
@@ -533,8 +533,8 @@ PokegearMap_KantoMap:
 	call TownMap_GetKantoLandmarkLimits
 	jr PokegearMap_ContinueMap
 
-PokegearMap_OrangeMap:
-	call TownMap_GetOrangeLandmarkLimits
+PokegearMap_NewIslandMap:
+	call TownMap_GetNewIslandLandmarkLimits
 PokegearMap_ContinueMap:
 	ld hl, hJoyLast
 	ld a, [hl]
@@ -770,8 +770,8 @@ TownMap_GetKantoLandmarkLimits:
 	ld e, PALLET_TOWN
 	ret
 
-TownMap_GetOrangeLandmarkLimits:
-	lb de, FARAWAY_ISLAND, SHAMOUTI_ISLAND
+TownMap_GetNewIslandLandmarkLimits:
+	lb de, NEW_TOWNHALL, NEW_TH_KIRI_BAWAH
 	ret
 
 PokegearRadio_Init:
@@ -1050,11 +1050,11 @@ RadioChannels:
 ; otherwise clear carry
 	ld a, [wPokegearMapPlayerIconLandmark]
 	cp KANTO_LANDMARK
-	jr nc, .kanto_or_orange
+	jr nc, .kanto_or_newisland
 	scf
 	ret
 
-.kanto_or_orange
+.kanto_or_newisland
 	and a
 	ret
 
@@ -1240,8 +1240,8 @@ _TownMap:
 	call DelayFrame
 
 	ld a, [wTownMapPlayerIconLandmark]
-	cp SHAMOUTI_LANDMARK
-	jr nc, .orange
+	cp NEW_ISLAND_LANDMARK
+	jr nc, .newisland
 	cp KANTO_LANDMARK
 	jr nc, .kanto
 	call TownMap_GetJohtoLandmarkLimits
@@ -1249,8 +1249,8 @@ _TownMap:
 .kanto
 	call TownMap_GetKantoLandmarkLimits
 	jr .resume
-.orange
-	call TownMap_GetOrangeLandmarkLimits
+.newisland
+	call TownMap_GetNewIslandLandmarkLimits
 
 .resume
 	call .loop
@@ -1344,8 +1344,8 @@ _TownMap:
 	call TownMapPals
 
 	ld a, [wTownMapPlayerIconLandmark]
-	cp SHAMOUTI_LANDMARK
-	jmp nc, TownMapOrangeFlips
+	cp NEW_ISLAND_LANDMARK
+	jmp nc, TownMapNewIslandFlips
 	cp KANTO_LANDMARK
 	jmp nc, TownMapKantoFlips
 	jmp TownMapJohtoFlips
@@ -1470,21 +1470,21 @@ PlayRadioStationPointers:
 LoadStation_PokemonChannel:
 	call GetCurrentLandmark
 	cp KANTO_LANDMARK
-	jr nc, .kanto_or_orange
+	jr nc, .kanto_or_newisland
 	call UpdateTime
 	ld a, [wTimeOfDay]
 	and a
 	jmp z, LoadStation_PokedexShow
 	jmp LoadStation_OaksPokemonTalk
 
-.kanto_or_orange:
+.kanto_or_newisland:
 	jmp LoadStation_PlacesAndPeople
 
 PokegearMap:
 	call LoadTownMapGFX
 	ld a, [wPokegearMapPlayerIconLandmark]
-	cp SHAMOUTI_LANDMARK
-	jmp nc, FillOrangeMap
+	cp NEW_ISLAND_LANDMARK
+	jmp nc, FillNewIslandMap
 	cp KANTO_LANDMARK
 	jmp nc, FillKantoMap
 	jmp FillJohtoMap
@@ -1705,8 +1705,8 @@ INCLUDE "data/maps/flypoints.asm"
 
 FlyMap:
 	call GetCurrentLandmark
-	cp SHAMOUTI_LANDMARK
-	jr nc, .OrangeFlyMap
+	cp NEW_ISLAND_LANDMARK
+	jr nc, .NewIslandFlyMap
 	cp KANTO_LANDMARK
 	jr nc, .KantoFlyMap
 ; Note that .NoKanto should be modified in tandem with this branch
@@ -1728,7 +1728,7 @@ FlyMap:
 	pop af
 	jmp TownMapPlayerIcon
 
-.OrangeFlyMap:
+.NewIslandFlyMap:
 	push af
 ; Start from Shamouti Island
 	ld a, FLY_SHAMOUTI
@@ -1739,10 +1739,10 @@ FlyMap:
 	ld a, FLY_NAVEL
 	ld [wEndFlypoint], a
 ; Fill out the map
-	call FillOrangeMap
+	call FillNewIslandMap
 	call TownMapBubble
 	call TownMapPals
-	call TownMapOrangeFlips
+	call TownMapNewIslandFlips
 	call .MapHud
 	pop af
 	jmp TownMapPlayerIcon
@@ -1834,8 +1834,8 @@ FillJohtoMap:
 	ld de, JohtoMap
 	jr FillTownMap
 
-FillOrangeMap:
-	ld de, OrangeMap
+FillNewIslandMap:
+	ld de, NewIslandMap
 	call FillTownMap
 	eventflagcheck EVENT_VISITED_FARAWAY_ISLAND
 	ret nz
@@ -1951,8 +1951,8 @@ TownMapKantoFlips:
 	decoord 0, 0, KantoMap
 	jr TownMapFlips
 
-TownMapOrangeFlips:
-	decoord 0, 0, OrangeMap
+TownMapNewIslandFlips:
+	decoord 0, 0, NewIslandMap
 TownMapFlips:
 	hlcoord 0, 0, wAttrmap
 	ld bc, SCREEN_AREA
@@ -2055,8 +2055,8 @@ INCBIN "gfx/town_map/johto.bin"
 KantoMap:
 INCBIN "gfx/town_map/kanto.bin"
 
-OrangeMap:
-INCBIN "gfx/town_map/orange.bin"
+NewIslandMap:
+INCBIN "gfx/town_map/newisland.bin"
 
 PokegearGFX:
 INCBIN "gfx/pokegear/pokegear.2bpp.lz"
