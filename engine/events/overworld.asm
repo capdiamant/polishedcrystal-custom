@@ -726,10 +726,9 @@ FlyFunction:
 
 .TryFly:
 ; Fly
-	; Remove the Badge requirement
-	; ld de, ENGINE_STORMBADGE
-	; call CheckBadge
-	; jr c, .nostormbadge
+	ld de, ENGINE_STORMBADGE
+	call CheckBadge
+	jr c, .nostormbadge
 	call CheckFlyAllowedOnMap
 	jr nz, .indoors
 
