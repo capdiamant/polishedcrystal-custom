@@ -605,7 +605,7 @@ PokegearMap_ContinueMap:
 	ld [hl], a
 .wrap_around_up
 	inc [hl]
-	call SkipHiddenOrangeIslandsUp
+	; call SkipHiddenOrangeIslandsUp
 	jr .done_dpad
 
 .down
@@ -618,7 +618,7 @@ PokegearMap_ContinueMap:
 	ld [hl], a
 .wrap_around_down
 	dec [hl]
-	call SkipHiddenOrangeIslandsDown
+	; call SkipHiddenOrangeIslandsDown
 
 .done_dpad
 	ld a, [wPokegearMapCursorLandmark]
@@ -771,7 +771,7 @@ TownMap_GetKantoLandmarkLimits:
 	ret
 
 TownMap_GetNewIslandLandmarkLimits:
-	lb de, NEW_TOWNHALL, NEW_TH_KIRI_BAWAH
+	lb de, NEW_TH_KIRI_BAWAH, NEW_TOWNHALL
 	ret
 
 PokegearRadio_Init:
