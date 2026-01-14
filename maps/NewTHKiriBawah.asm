@@ -4,6 +4,8 @@ NewTHKiriBawah_MapScriptHeader:
     def_callbacks
 
     def_warp_events
+    warp_event 2, 33, NEW_UJIAN_HUTAN, 1
+    warp_event 3, 33, NEW_UJIAN_HUTAN, 2
 
     def_coord_events
 

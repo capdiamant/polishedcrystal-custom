@@ -1087,6 +1087,7 @@ SECTION "New THKiriJalan Scripts", ROMX
 
 INCLUDE "maps/NewTHKiri.asm"
 INCLUDE "maps/NewTHKiriBawah.asm"
+INCLUDE "maps/NewUjianHutan.asm"
 
 
 ENDSECTION

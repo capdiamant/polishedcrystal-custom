@@ -151,6 +151,7 @@ DEF NEW_ISLAND_LANDMARK EQU const_value
 	const NEW_TOWNHALL	     ; 91
 	const NEW_TH_KIRI	     ; 92
 	const NEW_TH_KIRI_BAWAH	 ; 93
+	const NEW_UJIAN_HUTAN    ; 94
 
 DEF NUM_LANDMARKS EQU const_value
 

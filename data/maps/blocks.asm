@@ -1933,4 +1933,8 @@ SECTION "NewTHKiriBawah_BlockData", ROMX
 NewTHKiriBawah_BlockData:
 	INCBIN "maps/NewTHKiriBawah.ablk.lz"
 
+SECTION "NewUjianHutan_BlockData", ROMX
+NewUjianHutan_BlockData:
+	INCBIN "maps/NewUjianHutan.ablk.lz"
+
 ENDSECTION
