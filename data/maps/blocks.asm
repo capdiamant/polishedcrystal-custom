@@ -1937,4 +1937,8 @@ SECTION "NewUjianHutan_BlockData", ROMX
 NewUjianHutan_BlockData:
 	INCBIN "maps/NewUjianHutan.ablk.lz"
 
+SECTION "NewTHBawah_BlockData", ROMX
+NewTHBawah_BlockData:
+	INCBIN "maps/NewTHBawah.ablk.lz"
+
 ENDSECTION

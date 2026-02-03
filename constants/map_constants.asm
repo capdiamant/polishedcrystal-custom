@@ -710,5 +710,6 @@ ENDM
 	map_const NEW_TH_KIRI,							  	  18,  9 ;  2
 	map_const NEW_TH_KIRI_BAWAH,						  20, 18 ;  3
 	map_const NEW_UJIAN_HUTAN,							  24, 15 ;  4
+	map_const NEW_TH_BAWAH,							  	  21, 15 ;  5
 
 DEF NUM_MAP_GROUPS EQU const_value ; 38

@@ -1089,5 +1089,7 @@ INCLUDE "maps/NewTHKiri.asm"
 INCLUDE "maps/NewTHKiriBawah.asm"
 INCLUDE "maps/NewUjianHutan.asm"
 
+SECTION "New THBawahJalan Scripts", ROMX
+INCLUDE "maps/NewTHBawah.asm"
 
 ENDSECTION

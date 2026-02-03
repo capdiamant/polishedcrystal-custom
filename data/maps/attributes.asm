@@ -424,7 +424,8 @@ ENDM
 	map_attributes RuggedRoadSouth, RUGGED_ROAD_SOUTH, $71, NORTH
 	connection north, RuggedRoadNorth, RUGGED_ROAD_NORTH, 0
 
-	map_attributes NewTownhall, NEW_TOWNHALL, $43, WEST
+	map_attributes NewTownhall, NEW_TOWNHALL, $43, SOUTH | WEST
+	connection south, NewTHBawah, NEW_TH_BAWAH, -3
 	connection west, NewTHKiri, NEW_TH_KIRI, 6
 
 	map_attributes NewTHKiri, NEW_TH_KIRI, $43, SOUTH | EAST
@@ -437,6 +438,9 @@ ENDM
 
 	map_attributes NewUjianHutan, NEW_UJIAN_HUTAN, $43, NORTH
 	connection north, NewTHKiriBawah, NEW_TH_KIRI_BAWAH, -22
+
+	map_attributes NewTHBawah, NEW_TH_BAWAH, $43, NORTH
+	connection north, NewTownhall, NEW_TOWNHALL, 3
 
 	map_attributes SproutTower1F, SPROUT_TOWER_1F, $0, 0
 	map_attributes SproutTower2F, SPROUT_TOWER_2F, $0, 0
