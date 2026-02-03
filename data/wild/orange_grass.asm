@@ -336,4 +336,60 @@
 	wildmon 7, POLITOED
 	end_grass_wildmons
 
+	def_grass_wildmons NEW_TH_KIRI_BAWAH
+	db 10 percent, 10 percent, 10 percent ; encounter rates: morn/day/nite
+	; morn
+	wildmon 1, BULBASAUR
+	wildmon 2, IVYSAUR
+	wildmon 3, VENUSAUR
+	wildmon 4, ODDISH
+	wildmon 5, GLOOM
+	wildmon 6, VILEPLUME
+	wildmon 7, BELLOSSOM
+	; day
+	wildmon 1, CHARMANDER
+	wildmon 2, CHARMELEON
+	wildmon 3, CHARIZARD
+	wildmon 4, MAGBY
+	wildmon 5, MAGMAR
+	wildmon 6, MAGMORTAR
+	wildmon 7, ARCANINE
+	; nite
+	wildmon 1, SQUIRTLE
+	wildmon 2, WARTORTLE
+	wildmon 3, BLASTOISE
+	wildmon 4, POLIWAG
+	wildmon 5, POLIWHIRL
+	wildmon 6, POLIWRATH
+	wildmon 7, POLITOED
+	end_grass_wildmons
+
+	def_grass_wildmons NEW_UJIAN_HUTAN
+	db 10 percent, 10 percent, 10 percent ; encounter rates: morn/day/nite
+	; morn
+	wildmon 1, BULBASAUR
+	wildmon 2, IVYSAUR
+	wildmon 3, VENUSAUR
+	wildmon 4, ODDISH
+	wildmon 5, GLOOM
+	wildmon 6, VILEPLUME
+	wildmon 7, BELLOSSOM
+	; day
+	wildmon 1, CHARMANDER
+	wildmon 2, CHARMELEON
+	wildmon 3, CHARIZARD
+	wildmon 4, MAGBY
+	wildmon 5, MAGMAR
+	wildmon 6, MAGMORTAR
+	wildmon 7, ARCANINE
+	; nite
+	wildmon 1, SQUIRTLE
+	wildmon 2, WARTORTLE
+	wildmon 3, BLASTOISE
+	wildmon 4, POLIWAG
+	wildmon 5, POLIWHIRL
+	wildmon 6, POLIWRATH
+	wildmon 7, POLITOED
+	end_grass_wildmons
+
 	db -1 ; end
