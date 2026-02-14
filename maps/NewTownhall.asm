@@ -14,6 +14,12 @@ NewTownhall_MapScriptHeader:
 
     def_object_events
     object_event 33, 15, SPRITE_CAMPER, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, NewTownhallHMScript, -1
+    tmhmball_event 36, 14, HM_SURF, EVENT_GOT_HM03_SURF
+    tmhmball_event 37, 14, HM_CUT, EVENT_GOT_HM01_CUT
+    tmhmball_event 36, 15, HM_STRENGTH, EVENT_GOT_HM04_STRENGTH
+    tmhmball_event 37, 15, HM_FLY, EVENT_GOT_HM02_FLY
+    tmhmball_event 36, 16, HM_WHIRLPOOL, EVENT_GOT_HM05_WHIRLPOOL
+    tmhmball_event 37, 16, HM_WATERFALL, EVENT_GOT_HM06_WATERFALL
 
 NewTownhallFlyPoint:
     setflag ENGINE_FLYPOINT_NEW_TOWNHALL
