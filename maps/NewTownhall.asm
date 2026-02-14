@@ -20,11 +20,38 @@ NewTownhallFlyPoint:
     endcallback
 
 NewTownhallHMScript:
-    jumptextfaceplayer Text_HMEnabler
+    faceplayer
+    opentext
+    writetext Text_HMEnablerText
+    yesorno
+    iftruefwd .EnableHM
+    closetext
     end
+.EnableHM:
+    checkflag ENGINE_FOGBADGE
+    iftruefwd .RemoveBadge
+    sjumpfwd .EnableBadge
+.RemoveBadge:
+    clearflag ENGINE_FOGBADGE
+    clearflag ENGINE_HIVEBADGE
+    clearflag ENGINE_PLAINBADGE
+    clearflag ENGINE_STORMBADGE
+    clearflag ENGINE_GLACIERBADGE
+    clearflag ENGINE_RISINGBADGE
+    jumpthisopenedtext
+    text "HM removed!"
+    done
+.EnableBadge:
+    setflag ENGINE_FOGBADGE
+    setflag ENGINE_HIVEBADGE
+    setflag ENGINE_PLAINBADGE
+    setflag ENGINE_STORMBADGE
+    setflag ENGINE_GLACIERBADGE
+    setflag ENGINE_RISINGBADGE
+    jumpthisopenedtext
+    text "HM enabled!"
+    done
 
-Text_HMEnabler:
-    text "Hello, <PLAYER>."
-    para "This is to test"
-    line "the #mon text!"
+Text_HMEnablerText:
+    text "Toggle movement?"
     done
