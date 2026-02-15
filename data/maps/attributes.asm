@@ -432,15 +432,17 @@ ENDM
 	connection south, NewTHKiriBawah, NEW_TH_KIRI_BAWAH, -5
 	connection east, NewTownhall, NEW_TOWNHALL, -6
 
-	map_attributes NewTHKiriBawah, NEW_TH_KIRI_BAWAH, $43, NORTH | SOUTH
+	map_attributes NewTHKiriBawah, NEW_TH_KIRI_BAWAH, $43, NORTH | SOUTH | EAST
 	connection north, NewTHKiri, NEW_TH_KIRI, 5
 	connection south, NewUjianHutan, NEW_UJIAN_HUTAN, 22
+	connection east, NewTHBawah, NEW_TH_BAWAH, 3
 
 	map_attributes NewUjianHutan, NEW_UJIAN_HUTAN, $43, NORTH
 	connection north, NewTHKiriBawah, NEW_TH_KIRI_BAWAH, -22
 
-	map_attributes NewTHBawah, NEW_TH_BAWAH, $43, NORTH
+	map_attributes NewTHBawah, NEW_TH_BAWAH, $43, NORTH | WEST
 	connection north, NewTownhall, NEW_TOWNHALL, 3
+	connection west, NewTHKiriBawah, NEW_TH_KIRI_BAWAH, -3
 
 	map_attributes SproutTower1F, SPROUT_TOWER_1F, $0, 0
 	map_attributes SproutTower2F, SPROUT_TOWER_2F, $0, 0
