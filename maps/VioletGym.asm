@@ -1,30 +1,31 @@
 VioletGym_MapScriptHeader:
 	def_scene_scripts
-	scene_script VioletGymTrigger0
+	scene_script VioletGymNoopScene, SCENE_VIOLETGYM_NOOP
+	scene_const SCENE_VIOLETGYM_FALKNER_RETURNS
 
 	def_callbacks
 
 	def_warp_events
-	warp_event  4, 15, VIOLET_CITY, 2
-	warp_event  5, 15, VIOLET_CITY, 2
+	warp_event  4, 17, VIOLET_CITY, 2
+	warp_event  5, 17, VIOLET_CITY, 2
 
 	def_coord_events
 
 	def_bg_events
-	bg_event  3, 13, BGEVENT_READ, VioletGymStatue
-	bg_event  6, 13, BGEVENT_READ, VioletGymStatue
+	bg_event  3, 15, BGEVENT_READ, VioletGymStatue
+	bg_event  6, 15, BGEVENT_READ, VioletGymStatue
 
 	def_object_events
-	object_event  4, 13, SPRITE_GYM_GUY, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, ObjectEvent, EVENT_DARK_CAVE_FALKNER
-	object_event  5,  1, SPRITE_FALKNER, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, 0, OBJECTTYPE_SCRIPT, 0, VioletGymFalknerScript, EVENT_VIOLET_GYM_FALKNER
-	object_event  7,  6, SPRITE_BIRD_KEEPER, SPRITEMOVEDATA_STANDING_LEFT, 0, 2, -1, 0, OBJECTTYPE_GENERICTRAINER, 3, GenericTrainerBird_keeperRod, EVENT_VIOLET_GYM_FALKNER
-	object_event  2, 10, SPRITE_BIRD_KEEPER, SPRITEMOVEDATA_STANDING_RIGHT, 0, 2, -1, 0, OBJECTTYPE_GENERICTRAINER, 3, GenericTrainerBird_keeperAbe, EVENT_VIOLET_GYM_FALKNER
-	object_event  7, 13, SPRITE_GYM_GUY, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, VioletGymGuyScript, EVENT_VIOLET_GYM_FALKNER
+	object_event  4, 15, SPRITE_GYM_GUY, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, ObjectEvent, EVENT_DARK_CAVE_FALKNER
+	object_event  5,  2, SPRITE_FALKNER, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, 0, OBJECTTYPE_SCRIPT, 0, VioletGymFalknerScript, EVENT_VIOLET_GYM_FALKNER
+	object_event  7,  7, SPRITE_BIRD_KEEPER, SPRITEMOVEDATA_STANDING_LEFT, 0, 2, -1, 0, OBJECTTYPE_GENERICTRAINER, 3, GenericTrainerBird_keeperRod, EVENT_VIOLET_GYM_FALKNER
+	object_event  2, 11, SPRITE_BIRD_KEEPER, SPRITEMOVEDATA_STANDING_RIGHT, 0, 2, -1, 0, OBJECTTYPE_GENERICTRAINER, 3, GenericTrainerBird_keeperAbe, EVENT_VIOLET_GYM_FALKNER
+	object_event  7, 15, SPRITE_GYM_GUY, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, VioletGymGuyScript, EVENT_VIOLET_GYM_FALKNER
 
 	object_const_def
 	const VIOLETGYM_GYM_GUY2
 
-VioletGymTrigger0:
+VioletGymNoopScene:
 	sdefer VioletGymFalknerAwayScript
 	end
 
@@ -58,13 +59,31 @@ VioletGymFalknerScript:
 	iftrue_jumpopenedtext FalknerFightDoneText
 	setevent EVENT_BEAT_BIRD_KEEPER_ROD
 	setevent EVENT_BEAT_BIRD_KEEPER_ABE
-	setmapscene ELMS_LAB, $2
+	setmapscene ELMS_LAB, SCENE_ELMSLAB_NOOP
 	specialphonecall SPECIALCALL_ASSISTANT
 	writetext FalknerZephyrBadgeText
 	promptbutton
 	verbosegivetmhm TM_ROOST
 	setevent EVENT_GOT_TM31_ROOST
-	jumpopenedtext FalknerTMMudSlapText
+	jumpthisopenedtext
+
+	text "By using a TM, a"
+	line "#mon will"
+
+	para "instantly learn a"
+	line "new move."
+
+	para "A TM can be used"
+	line "as many times as"
+	cont "you want."
+
+	para "TM51 contains"
+	line "Roost."
+
+	para "It lands on the"
+	line "ground to restore"
+	cont "half the max HP."
+	done
 
 GenericTrainerBird_keeperRod:
 	generictrainer BIRD_KEEPER, ROD, EVENT_BEAT_BIRD_KEEPER_ROD, Bird_keeperRodSeenText, Bird_keeperRodBeatenText
@@ -88,7 +107,27 @@ GenericTrainerBird_keeperAbe:
 VioletGymGuyScript:
 	checkevent EVENT_BEAT_FALKNER
 	iftrue_jumptextfaceplayer VioletGymGuyWinText
-	jumptextfaceplayer VioletGymGuyText
+	jumpthistextfaceplayer
+
+	text "Hey! I'm no train-"
+	line "er but I can give"
+	cont "some advice!"
+
+	para "Believe me!"
+	line "If you believe, a"
+
+	para "championship dream"
+	line "can come true."
+
+	para "You believe?"
+	line "Then listen."
+
+	para "The Grass-type is"
+	line "weak against the"
+
+	para "Flying-type. Keep"
+	line "this in mind."
+	done
 
 VioletGymStatue:
 	gettrainername FALKNER, 1, STRING_BUFFER_4
@@ -150,24 +189,6 @@ FalknerZephyrBadgeText:
 	line "too."
 	done
 
-FalknerTMMudSlapText:
-	text "By using a TM, a"
-	line "#mon will"
-
-	para "instantly learn a"
-	line "new move."
-
-	para "A TM can be used"
-	line "as many times as"
-	cont "you want."
-
-	para "TM51 contains"
-	line "Roost."
-
-	para "It lands on the"
-	line "ground to restore"
-	cont "half the max HP."
-	done
 
 FalknerFightDoneText:
 	text "There are #mon"
@@ -213,26 +234,6 @@ Bird_keeperAbeBeatenText:
 	line "true!"
 	done
 
-VioletGymGuyText:
-	text "Hey! I'm no train-"
-	line "er but I can give"
-	cont "some advice!"
-
-	para "Believe me!"
-	line "If you believe, a"
-
-	para "championship dream"
-	line "can come true."
-
-	para "You believe?"
-	line "Then listen."
-
-	para "The Grass-type is"
-	line "weak against the"
-
-	para "Flying-type. Keep"
-	line "this in mind."
-	done
 
 VioletGymGuyWinText:
 	text "Nice battle! Keep"

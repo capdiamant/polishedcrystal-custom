@@ -1,3 +1,5 @@
+DEF POCKET_MENU_DATA_SIZE EQU 24
+
 ; Pack.Jumptable and BattlePack.Jumptable indexes
 	const_def
 	const PACKSTATE_INITGFX
@@ -143,8 +145,7 @@ PackJumptable_SortMenu:
 	push hl
 	ld a, [wMenuData_ScrollingMenuSpacing]
 	push af
-	ld a, [wCurPocket]
-	cp TM_HM - 1
+	call Pack_IsTMHMPocket
 	ld hl, MenuDataHeader_SortTMs
 	ld de, Jumptable_SortTMs
 	jr z, .got_sort_menu
@@ -190,13 +191,13 @@ UseKeyItem:
 	jmp Pack_PrintTextNoScroll
 
 .Current:
-	predef_jump DoKeyItemEffect
+	farjp DoKeyItemEffect
 
 .Party:
 	ld a, [wPartyCount]
 	and a
 	jr z, .NoPokemon
-	predef DoKeyItemEffect
+	farcall DoKeyItemEffect
 	xor a
 	ldh [hBGMapMode], a
 	call Pack_InitGFX
@@ -208,7 +209,7 @@ UseKeyItem:
 	jmp Pack_PrintTextNoScroll
 
 .Field:
-	predef DoKeyItemEffect
+	farcall DoKeyItemEffect
 	ld a, [wItemEffectSucceeded]
 	and a
 	jr z, .Oak
@@ -592,17 +593,17 @@ Pack_SetPocketMenuJump:
 	ret
 
 Pack_RegularPocketMenu:
-	ld bc, ItemsPocketMenuDataHeader
+	ld bc, PocketMenuDataHeaders
 	call Pack_PocketMenu
 	jmp Pack_InterpretJoypad
 
 Pack_TutorialPocketMenu:
-	ld bc, Tutorial_ItemsPocketMenuDataHeader
+	ld bc, Tutorial_PocketMenuDataHeaders
 	jr Pack_TempPocketMenu
 
 Pack_DepositSellPocketMenu:
 	; Menu input is handled elsewhere.
-	ld bc, PC_Mart_ItemsPocketMenuDataHeader
+	ld bc, PC_Mart_PocketMenuDataHeaders
 	; fallthrough
 Pack_TempPocketMenu:
 	ld hl, wTempPocketCursor
@@ -623,7 +624,7 @@ Pack_PocketMenu:
 	push hl
 	ld h, b
 	ld l, c
-	ld bc, MedicinePocketMenuDataHeader - ItemsPocketMenuDataHeader
+	ld bc, POCKET_MENU_DATA_SIZE
 	push af
 	rst AddNTimes
 	call CopyMenuHeader
@@ -762,11 +763,11 @@ KeyItemSubmenu:
 	jmp Pack_PrintTextNoScroll
 
 .Current:
-	predef DoKeyItemEffect
+	farcall DoKeyItemEffect
 	jr .didnt_use_item
 
 .BattleField:
-	predef DoKeyItemEffect
+	farcall DoKeyItemEffect
 	ld a, [wItemEffectSucceeded]
 	and a
 	jr nz, .quit_run_script
@@ -777,7 +778,7 @@ KeyItemSubmenu:
 	jmp Pack_InitColors
 
 .BattleOnly:
-	predef DoKeyItemEffect
+	farcall DoKeyItemEffect
 	ld a, [wItemEffectSucceeded]
 	and a
 	jr z, .Oak
@@ -967,17 +968,22 @@ DrawPackGFX:
 	; place pack gfx
 	ld a, [wBattleType]
 	cp BATTLETYPE_TUTORIAL
-	ld bc, FemalePackGFX
+	ld bc, PlayerPackGFX + PLAYER_FEMALE * NUM_POCKETS * 2
 	jr z, .got_pointers
+
+	assert NUM_POCKETS * 2 == 12
 	ld a, [wPlayerGender]
-	ld bc, MalePackGFX
-	and a ; PLAYER_MALE
-	jr z, .got_pointers
-	ld bc, FemalePackGFX
-	dec a ; PLAYER_FEMALE
-	jr z, .got_pointers
-	; PLAYER_ENBY
-	ld bc, EnbyPackGFX
+	add a ; * 2
+	add a ; * 4
+	ld b, a
+	add a ; * 8
+	add b ; * 12
+	add LOW(PlayerPackGFX)
+	ld c, a
+	adc HIGH(PlayerPackGFX)
+	sub c
+	ld b, a
+
 .got_pointers
 	pop af
 	ld l, a
@@ -991,32 +997,7 @@ DrawPackGFX:
 	lb bc, BANK("Pack Graphics"), 25
 	jmp DecompressRequest2bpp
 
-MalePackGFX:
-	farbank "Pack Graphics"
-	fardw PackM0GFX
-	fardw PackM1GFX
-	fardw PackM2GFX
-	fardw PackM3GFX
-	fardw PackM4GFX
-	fardw PackM5GFX
-
-FemalePackGFX:
-	farbank "Pack Graphics"
-	fardw PackF0GFX
-	fardw PackF1GFX
-	fardw PackF2GFX
-	fardw PackF3GFX
-	fardw PackF4GFX
-	fardw PackF5GFX
-
-EnbyPackGFX:
-	farbank "Pack Graphics"
-	fardw PackX0GFX
-	fardw PackX1GFX
-	fardw PackX2GFX
-	fardw PackX3GFX
-	fardw PackX4GFX
-	fardw PackX5GFX
+INCLUDE "data/player/pack_gfx.asm"
 
 Pack_InterpretJoypad:
 	ld hl, wMenuJoypad
@@ -1177,7 +1158,10 @@ Pack_InitColors:
 	call GetCGBLayout
 	jmp SetDefaultBGPAndOBP
 
-; Note that the game assumes strict order of menu data headers!
+PocketMenuDataHeaders:
+; entries correspond to pocket constants, skipping TM_HM
+	table_width POCKET_MENU_DATA_SIZE
+
 ItemsPocketMenuDataHeader:
 	db MENU_BACKUP_TILES
 	menu_coords 7, 1, 19, 11
@@ -1252,6 +1236,12 @@ KeyItemsPocketMenuDataHeader:
 	dba PlaceMenuKeyItemName
 	dba DoNothing
 	dba UpdateKeyItemIconAndDescription
+
+	assert_table_length NUM_POCKETS - 1 ; skip TM_HM
+
+PC_Mart_PocketMenuDataHeaders:
+; entries correspond to pocket constants, skipping TM_HM
+	table_width POCKET_MENU_DATA_SIZE
 
 PC_Mart_ItemsPocketMenuDataHeader:
 	db MENU_BACKUP_TILES
@@ -1328,6 +1318,12 @@ PC_Mart_KeyItemsPocketMenuDataHeader:
 	dba DoNothing
 	dba UpdateKeyItemIconAndDescription
 
+	assert_table_length NUM_POCKETS - 1 ; skip TM_HM
+
+Tutorial_PocketMenuDataHeaders:
+; entries correspond to first three pocket constants
+	table_width POCKET_MENU_DATA_SIZE
+
 Tutorial_ItemsPocketMenuDataHeader:
 	db MENU_BACKUP_TILES
 	menu_coords 7, 1, 19, 11
@@ -1372,6 +1368,8 @@ Tutorial_BallsPocketMenuDataHeader:
 	dba PlaceMenuItemName
 	dba PlaceMenuItemQuantity
 	dba UpdateItemIconAndDescription
+
+	assert_table_length 3 ; just ITEM, MEDICINE, and BALL pockets
 
 Text_SortItemsHow:
 	text "How do you want"
@@ -1431,7 +1429,7 @@ Text_MoveItemWhere:
 	text_end
 
 PackInterfaceGFX:
-INCBIN "gfx/pack/pack_top_left.2bpp.lz"
+INCBIN "gfx/pack/pack_top_left.2bpp.lzp"
 
 Special_ChooseItem::
 	call DisableSpriteUpdates

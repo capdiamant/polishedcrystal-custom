@@ -1,5 +1,7 @@
 GoldenrodGym_MapScriptHeader:
 	def_scene_scripts
+	scene_const SCENE_GOLDENRODGYM_NOOP
+	scene_const SCENE_GOLDENRODGYM_WHITNEY_STOPS_CRYING
 
 	def_callbacks
 
@@ -8,7 +10,7 @@ GoldenrodGym_MapScriptHeader:
 	warp_event  3, 17, GOLDENROD_CITY, 1
 
 	def_coord_events
-	coord_event  8,  5, 1, WhitneyCriesScript
+	coord_event  8,  5, SCENE_GOLDENRODGYM_WHITNEY_STOPS_CRYING, WhitneyCriesScript
 
 	def_bg_events
 	bg_event  1, 15, BGEVENT_READ, GoldenrodGymStatue
@@ -17,7 +19,7 @@ GoldenrodGym_MapScriptHeader:
 	def_object_events
 	object_event  9,  6, SPRITE_CUTE_GIRL, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, 0, OBJECTTYPE_GENERICTRAINER, 1, GenericTrainerSrandjrJoandcath1, -1
 	object_event  8,  3, SPRITE_WHITNEY, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, 0, OBJECTTYPE_SCRIPT, 0, GoldenrodGymWhitneyScript, -1
-	object_event  9, 13, SPRITE_LASS, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, 0, OBJECTTYPE_GENERICTRAINER, 4, GenericTrainerLassCathy, -1
+	object_event  9, 13, SPRITE_LASS, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, PAL_NPC_DARK_BLUE, OBJECTTYPE_TRAINER, 4, TrainerLassCathy, -1
 	object_event  9,  7, SPRITE_CUTE_GIRL, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, 0, OBJECTTYPE_GENERICTRAINER, 1, GenericTrainerSrandjrJoandcath2, -1
 	object_event  0,  2, SPRITE_BEAUTY, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, 0, OBJECTTYPE_GENERICTRAINER, 3, GenericTrainerBeautyVictoria, -1
 	object_event 19,  5, SPRITE_BEAUTY, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, 0, OBJECTTYPE_GENERICTRAINER, 2, GenericTrainerBeautySamantha, -1
@@ -37,7 +39,7 @@ GoldenrodGymWhitneyScript:
 	reloadmapafterbattle
 	setevent EVENT_BEAT_WHITNEY
 	setevent EVENT_MADE_WHITNEY_CRY
-	setscene $1
+	setscene SCENE_GOLDENRODGYM_WHITNEY_STOPS_CRYING
 	setevent EVENT_BEAT_BEAUTY_VICTORIA
 	setevent EVENT_BEAT_BEAUTY_SAMANTHA
 	setevent EVENT_BEAT_LASS_CATHY
@@ -46,7 +48,15 @@ GoldenrodGymWhitneyScript:
 	opentext
 	checkevent EVENT_MADE_WHITNEY_CRY
 	iffalsefwd .StoppedCrying
-	jumpopenedtext WhitneyYouMeanieText
+	jumpthisopenedtext
+
+	text "Waaaaah!"
+
+	para "Waaaaah!"
+
+	para "…Snivel, hic…"
+	line "…You meanie!"
+	done
 
 .StoppedCrying:
 	checkevent EVENT_GOT_TM45_ATTRACT
@@ -75,8 +85,12 @@ GoldenrodGymWhitneyScript:
 	cont "like me? ♥"
 	done
 
-GenericTrainerLassCathy:
-	generictrainer LASS, CATHY, EVENT_BEAT_LASS_CATHY, LassCathySeenText, LassCathyBeatenText
+TrainerLassCathy:
+	trainer LASS, CATHY, EVENT_BEAT_LASS_CATHY, LassCathySeenText, LassCathyBeatenText, 0, .Script, TRAINERPAL_DARK_LASS
+
+.Script:
+	endifjustbattled
+	jumpthistextfaceplayer
 
 	text "Do my #mon"
 	line "think I'm cute?"
@@ -88,7 +102,7 @@ WhitneyCriesScript:
 	turnobject PLAYER, DOWN
 	showtext JoWhitneyCriesText
 	applymovement GOLDENRODGYM_LASS2, JoWalksAwayMovement
-	setscene $0
+	setscene SCENE_GOLDENRODGYM_NOOP
 	clearevent EVENT_MADE_WHITNEY_CRY
 	end
 
@@ -207,14 +221,6 @@ WhitneyShouldntBeSoSeriousText:
 	cont "you child, you!"
 	done
 
-WhitneyYouMeanieText:
-	text "Waaaaah!"
-
-	para "Waaaaah!"
-
-	para "…Snivel, hic…"
-	line "…You meanie!"
-	done
 
 WhitneyWhatDoYouWantText:
 	text "…Sniff…"

@@ -99,7 +99,7 @@ CheckOpponentMentalHerb:
 	call StackCallOpponentTurn
 CheckMentalHerb:
 	; Check if we hold it
-	predef GetUserItemAfterUnnerve
+	call GetUserItemAfterUnnerve
 	ld a, b
 	cp HELD_MENTAL_HERB
 	ret nz
@@ -167,7 +167,9 @@ CheckMentalHerb:
 	ld hl, CuredDisableWithItem
 	call nz, .print
 
-	jmp ConsumeUserItem
+	call ConsumeUserItem
+	xor a
+	ret
 
 .print
 	push bc

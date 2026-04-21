@@ -457,7 +457,7 @@ GetStorageBoxPointer:
 	; Ensure that we're dealing with an actual box and not a partymon.
 	ld a, b
 	and a
-	ld a, ERR_NEWBOX
+	ld a, ERR_PC_BOX_ZERO
 	jmp z, Crash
 
 	ld a, BANK(sNewBox1)
@@ -484,7 +484,7 @@ GetStorageBoxPointer:
 	dec c
 	ld d, 1 ; will cause a useless bankswitch in flag checking, but that's OK
 	ld b, CHECK_FLAG
-	predef FlagPredef
+	farcall SmallFlagAction
 	pop bc
 	jr z, .got_bank
 	inc d
@@ -579,7 +579,7 @@ SetStorageBoxPointer:
 	jr z, .got_flag_action
 	ld b, SET_FLAG
 .got_flag_action
-	predef FlagPredef
+	farcall SmallFlagAction
 	jr .done
 
 .party
@@ -679,7 +679,7 @@ AddStorageMon:
 
 	; Allocate the entry. Return a fatal error if the entry was already set.
 	call AllocateStorageFlag
-	ld a, ERR_NEWBOX
+	ld a, ERR_PC_BOX_COLLISION
 	jmp nz, Crash
 	push hl
 	push de
@@ -997,7 +997,7 @@ SetTempPartyMonData:
 	ld de, wTempMonMaxHP
 	ld a, [wTempMonLevel]
 	ld [wCurPartyLevel], a
-	predef CalcPkmnStats
+	farcall CalcPkmnStats
 
 	; Reset status condition
 	xor a
@@ -1412,7 +1412,7 @@ StorageFlagAction:
 	ld c, e
 	dec c
 	ld d, 0
-	predef_jump FlagPredef
+	farjp SmallFlagAction
 
 Special_CurBoxFullCheck:
 ; Returns [hScriptVar] = zero if wTempMonBox == wCurBox

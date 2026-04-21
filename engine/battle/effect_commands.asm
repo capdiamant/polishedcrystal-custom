@@ -122,6 +122,56 @@ DoTurn:
 	call UpdateMoveData
 	; fallthrough
 DoMove:
+	; InitializeMove was split off to handle moves that restart move execution,
+	; such as with items like Power Herb, or moves like Metronome.
+	; Otherwise, they would nest move execution, which caused problems.
+	call InitializeMove
+.ReadMoveEffectCommand:
+	call ReadMoveScriptByte
+
+	; endturn_command (-2) is used to terminate branches without ending the read cycle
+	cp endturn_command
+	jr nc, .endturn_herb
+
+	; The rest of the commands (fd and below) are read from BattleCommandPointers
+	push bc
+	dec a
+	ld c, a
+	ld b, 0
+	ld hl, BattleCommandPointers
+	add hl, bc
+	add hl, bc
+	pop bc
+
+	ld a, BANK(BattleCommandPointers)
+	call GetFarWord
+
+	call _hl_
+
+	jr .ReadMoveEffectCommand
+
+.endturn_herb
+	call CheckEndMoveEffects
+	call CheckThroatSpray
+	jmp CheckPowerHerb
+
+ReadMoveScriptByte:
+	ld hl, wBattleScriptBufferLoc
+	ld a, [hli]
+	ld h, [hl]
+	ld l, a
+
+	inc hl
+	ld a, l
+	ld [wBattleScriptBufferLoc], a
+	ld a, h
+	ld [wBattleScriptBufferLoc + 1], a
+	dec hl
+
+	ld a, BANK(MoveEffectsPointers)
+	jmp GetFarByte
+
+InitializeMove:
 ; Get the user's move effect.
 	; Abilities ignorance doesn't apply for future moves (even active users).
 	call GetFutureSightUser
@@ -151,52 +201,7 @@ DoMove:
 	ld [wBattleScriptBufferLoc], a
 	ld a, h
 	ld [wBattleScriptBufferLoc + 1], a
-
-.ReadMoveEffectCommand:
-	call ReadMoveScriptByte
-
-	; endturn_command (-2) is used to terminate branches without ending the read cycle
-	cp endturn_command
-	jr nc, .endturn_herb
-
-	; The rest of the commands (fd and below) are read from BattleCommandPointers
-	push bc
-	dec a
-	ld c, a
-	ld b, 0
-	ld hl, BattleCommandPointers
-	add hl, bc
-	add hl, bc
-	pop bc
-
-	ld a, BANK(BattleCommandPointers)
-	call GetFarWord
-
-	call _hl_
-
-	jr .ReadMoveEffectCommand
-
-.endturn_herb
-	call CheckEndMoveEffects
-	call CheckThroatSpray
-	call CheckPowerHerb
 	ret
-
-ReadMoveScriptByte:
-	ld hl, wBattleScriptBufferLoc
-	ld a, [hli]
-	ld h, [hl]
-	ld l, a
-
-	inc hl
-	ld a, l
-	ld [wBattleScriptBufferLoc], a
-	ld a, h
-	ld [wBattleScriptBufferLoc + 1], a
-	dec hl
-
-	ld a, BANK(MoveEffectsPointers)
-	jmp GetFarByte
 
 CheckTurn:
 BattleCommand_checkturn:
@@ -265,22 +270,17 @@ BattleCommand_checkturn:
 	jr z, .woke_up
 .no_early_bird
 	dec [hl]
-	jr z, .woke_up
-
-	; Still asleep.
-	xor a
-	ld [wNumHits], a
-	ld de, ANIM_SLP
-	call FarPlayBattleAnimation
-	jr .fast_asleep
+	jr nz, .fast_asleep
 
 .woke_up
+if !DEF(FAITHFUL)
 	; if user has Early Bird, display ability activation
 	; a is still (user's ability - EARLY_BIRD)
 	and a
 	jr nz, .woke_up_no_early_bird
 	farcall BeginAbility
 	farcall ShowAbilityActivation
+endc
 .woke_up_no_early_bird
 	ld hl, WokeUpText
 	call StdBattleTextbox
@@ -304,6 +304,11 @@ BattleCommand_checkturn:
 .fast_asleep
 	ld hl, FastAsleepText
 	call StdBattleTextbox
+
+	xor a
+	ld [wNumHits], a
+	ld de, ANIM_SLP
+	call FarPlayBattleAnimation
 
 	; Sleep Talk bypasses sleep.
 	ld a, BATTLE_VARS_MOVE_ANIM
@@ -574,8 +579,20 @@ CheckPowerHerb:
 	cp WEATHER_SUN
 	jr z, .chargeup
 
+	; check for solarization
+	call GetSolarizedWeather
+	cp WEATHER_SUN
+	jr nz, .no_solar_beam
+
+	farcall BeginAbility
+	farcall ShowAbilityActivation
+	ld hl, BattleText_MegaSolCharged
+	call StdBattleTextbox
+	farcall EndAbility
+	jr .chargeup
+
 .no_solar_beam
-	predef GetUserItemAfterUnnerve
+	call GetUserItemAfterUnnerve
 	ld a, b
 	cp HELD_POWER_HERB
 	jr z, .has_power_herb
@@ -603,8 +620,12 @@ CheckPowerHerb:
 .chargeup
 	call CheckUserIsCharging
 	ld a, 2
-	jr z, _ResetTurn
-	; fallthrough
+	jr z, .got_charging
+	dec a
+.got_charging
+	call _ResetTurn
+	jmp DoMove
+
 ResetTurn:
 	ld a, 1
 _ResetTurn:
@@ -620,7 +641,7 @@ _ResetTurn:
 	ld [hl], a
 	xor a
 	ld [wAlreadyDisobeyed], a
-	jmp DoMove
+	jmp InitializeMove
 
 MoveDisabled:
 	; Make sure any charged moves fail
@@ -660,13 +681,13 @@ CheckAffection:
 .cont
 	push hl
 	push bc
-	ld b, 3
+	ld b, NUM_AFFECTION_LEVELS - 1
 
 	; Convert current friendship value to Affection thresholds.
 	ld a, MON_HAPPINESS
 	call TrueUserPartyAttr
 
-	ld hl, .AffectionThresholds
+	ld hl, AffectionThresholds
 .loop
 	cp [hl]
 	jr nc, .done
@@ -680,11 +701,7 @@ CheckAffection:
 	pop hl
 	ret
 
-.AffectionThresholds:
-	db 255
-	db 220
-	db 180
-	db 0
+INCLUDE "data/battle/affection_thresholds.asm"
 
 OpponentAffectionText:
 	call StackCallOpponentTurn
@@ -1201,7 +1218,7 @@ BattleCommand_critical:
 	ld c, 0
 	jr nz, .Ability
 
-	predef GetUserItemAfterUnnerve
+	call GetUserItemAfterUnnerve
 	ld c, 0
 	ld a, [hl]
 	cp LUCKY_PUNCH
@@ -1267,7 +1284,7 @@ BattleCommand_critical:
 
 	; Sufficient Affection doubles critrate, independently of stages.
 	call CheckAffection
-	cp 3
+	cp AFFECTION_LEVEL_3
 	jr c, .no_affection_boost
 	sla b
 .no_affection_boost
@@ -1279,10 +1296,10 @@ BattleCommand_critical:
 .guranteed_crit
 	; fallthrough
 SetCrit:
-	ld a, 1 << MOVEHIT_CRITICAL
+	ld a, MOVEHIT_CRITICAL
 	jr SetMoveHitState
 SetSubHit:
-	ld a, 1 << MOVEHIT_SUBSTITUTE
+	ld a, MOVEHIT_SUBSTITUTE
 SetMoveHitState:
 	push hl
 	ld hl, wMoveHitState
@@ -1292,10 +1309,10 @@ SetMoveHitState:
 	ret
 
 ResetCrit:
-	ld a, 1 << MOVEHIT_CRITICAL
+	ld a, MOVEHIT_CRITICAL
 	jr ResetMoveHitState
 ResetSubHit:
-	ld a, 1 << MOVEHIT_SUBSTITUTE
+	ld a, MOVEHIT_SUBSTITUTE
 ResetMoveHitState:
 	push hl
 	ld hl, wMoveHitState
@@ -1306,10 +1323,10 @@ ResetMoveHitState:
 	ret
 
 CheckCrit:
-	ld a, 1 << MOVEHIT_CRITICAL
+	ld a, MOVEHIT_CRITICAL
 	jr CheckMoveHitState
 CheckSubHit:
-	ld a, 1 << MOVEHIT_SUBSTITUTE
+	ld a, MOVEHIT_SUBSTITUTE
 CheckMoveHitState:
 	push hl
 	ld hl, wMoveHitState
@@ -1633,7 +1650,7 @@ CheckAirborne:
 	; Check Iron Ball
 	push de
 	push bc
-	predef GetUserItemAfterUnnerve
+	call GetUserItemAfterUnnerve
 	ld a, b
 	pop bc
 	pop de
@@ -1694,7 +1711,7 @@ CheckTypeMatchup:
 
 	; Ring Target or Inverse battles bypass the type matchup check.
 	push bc
-	predef GetUserItemAfterUnnerve
+	call GetUserItemAfterUnnerve
 	ld a, b
 	pop bc
 	cp HELD_RING_TARGET
@@ -1899,12 +1916,7 @@ INCLUDE "data/moves/powder_moves.asm"
 
 BattleCommand_damagevariation:
 ; Modify the damage spread between 85% and 100%.
-
-; Because of the method of division the probability distribution
-; is not consistent. This makes the highest damage multipliers
-; rarer than normal.
-
-; No point in reducing 1 or 0 damage.
+	; No point in reducing 1 or 0 damage.
 	ld hl, wCurDamage
 	ld a, [hli]
 	and a
@@ -2012,7 +2024,7 @@ BattleCommand_checkhit:
 
 	; Affection-based evasion
 	call CheckOpponentAffection
-	cp 3
+	cp AFFECTION_LEVEL_3
 	jr c, .no_affection_evasion
 
 	ld a, 10
@@ -2113,7 +2125,7 @@ BattleCommand_checkhit:
 	farcall ApplyAccuracyAbilities
 
 	; Check user items
-	predef GetUserItemAfterUnnerve
+	call GetUserItemAfterUnnerve
 	ld a, b
 	cp HELD_ACCURACY_BOOST
 	jr z, .accuracy_boost_item
@@ -2287,7 +2299,8 @@ BattleCommand_checkhit:
 
 .WeatherAccCheck:
 ; Returns z if the move used always hits in the current weather
-	call GetWeatherAfterOpponentUmbrella
+	call GetSolarizedWeather
+	call nz, GetWeatherAfterOpponentUmbrella
 	cp WEATHER_RAIN
 	jr z, .RainAccCheck
 	cp WEATHER_HAIL
@@ -2748,9 +2761,11 @@ BattleCommand_applydamage:
 
 .enduring_with_item
 	push af
+	call SwitchTurn
+	farcall ItemRecoveryAnim
+	call SwitchTurn
 	call GetOpponentItem
 	call GetCurItemName
-
 	ld hl, HungOnText
 	call StdBattleTextbox
 	pop af
@@ -2861,7 +2876,7 @@ FailText_CheckOpponentProtect:
 	ld hl, AttackMissedText
 	call StdBattleTextbox
 .cont_atkmiss
-	predef GetUserItemAfterUnnerve
+	call GetUserItemAfterUnnerve
 	ld a, b
 	cp HELD_BLUNDER_POLICY
 	ret nz
@@ -2902,7 +2917,7 @@ BattleCommand_criticaltext:
 	; Thus, if this applies, show the relevant msg 50% of the
 	; time in place of the regular one.
 	call CheckAffection
-	cp 3
+	cp AFFECTION_LEVEL_3
 	jr c, .no_affection_boost
 	call BattleRandom
 	add a
@@ -2937,7 +2952,7 @@ BattleCommand_criticaltext:
 	jr c, .cont
 	ld b, SET_FLAG
 	ld hl, wEvolvableFlags
-	predef FlagPredef ; c still contains wCurBatlteMon
+	farcall SmallFlagAction ; c still contains wCurBatlteMon
 
 .cont
 	call ResetCrit
@@ -2987,7 +3002,7 @@ BattleCommand_startloop:
 	ld a, 5
 	jr z, .got_count
 	push hl
-	predef GetUserItemAfterUnnerve
+	call GetUserItemAfterUnnerve
 	pop hl
 	ld a, b
 	cp HELD_LOADED_DICE
@@ -3222,7 +3237,7 @@ BattleCommand_postfainteffects:
 	call StdBattleTextbox
 
 	call GetMaxHP
-	predef SubtractHPFromUser
+	farcall SubtractHPFromUser
 	call SwitchTurn
 	xor a
 	ld [wNumHits], a
@@ -3512,7 +3527,7 @@ CheckThroatSpray:
 	call HasUserFainted
 	ret z
 
-	predef GetUserItemAfterUnnerve
+	call GetUserItemAfterUnnerve
 	ld a, b
 	cp HELD_THROAT_SPRAY
 	ret nz
@@ -3541,7 +3556,7 @@ CheckWhiteHerbEjectPack:
 
 .do_it
 	push bc
-	predef GetUserItemAfterUnnerve
+	call GetUserItemAfterUnnerve
 	ld a, b
 	pop bc
 	cp HELD_WHITE_HERB
@@ -3570,7 +3585,7 @@ CheckWhiteHerbEjectPack:
 	push bc
 	push de
 	push hl
-	predef GetUserItemAfterUnnerve
+	call GetUserItemAfterUnnerve
 	ld a, b
 	pop hl
 	pop de
@@ -3668,7 +3683,7 @@ CheckMirrorHerb:
 	push bc
 	push hl
 	push de
-	predef GetUserItemAfterUnnerve
+	call GetUserItemAfterUnnerve
 	ld a, b
 	cp HELD_MIRROR_HERB
 	jr nz, .stat_raise_failed
@@ -3737,7 +3752,7 @@ EndMoveDamageChecks:
 	; life orb, shell bell
 	call HasUserFainted
 	ret z
-	predef GetUserItemAfterUnnerve
+	call GetUserItemAfterUnnerve
 	push bc
 	call GetCurItemName
 	pop bc
@@ -3806,7 +3821,7 @@ EndMoveDamageChecks:
 	ld b, a
 	ldh a, [hQuotient + 2]
 	ld c, a
-	predef SubtractHPFromUser
+	farcall SubtractHPFromUser
 	ld hl, BattleText_UserLostSomeOfItsHP
 	jmp StdBattleTextbox
 
@@ -3879,7 +3894,7 @@ UnevolvedEviolite:
 	and SPECIESFORM_MASK
 	ld b, a
 	; bc = index
-	predef GetEvosAttacksPointer
+	farcall GetEvosAttacksPointer
 	ld a, BANK(EvosAttacks)
 	call GetFarByte
 	inc a
@@ -4110,7 +4125,8 @@ HailDefenseBoost:
 	push bc
 	lb bc, WEATHER_HAIL, ICE
 WeatherDefenseBoost:
-	call GetWeatherAfterOpponentUmbrella
+	call GetSolarizedWeather
+	call nz, GetWeatherAfterOpponentUmbrella
 	cp b
 	ld a, c
 	pop bc
@@ -4321,6 +4337,13 @@ BattleCommand_damagecalc:
 .check_burn
 	bit BRN, a
 	jr z, .burn_done
+
+	; Burn should not halve physical attack if using Facade, or with Guts.
+	ld a, BATTLE_VARS_MOVE_ANIM
+	call GetBattleVar
+	cp FACADE
+	jr z, .burn_done
+
 	call GetTrueUserIgnorableAbility
 	cp GUTS
 	ln a, 1, 2 ; 1/2 = 50%
@@ -4720,9 +4743,7 @@ TakeDamage:
 	and a
 	jr nz, .mimic_sub_check
 
-	ld a, BATTLE_VARS_SUBSTATUS4_OPP
-	call GetBattleVar
-	bit SUBSTATUS_SUBSTITUTE, a
+	call CheckSubstituteOpp
 	jr nz, SelfInflictDamageToSubstitute
 .mimic_sub_check
 	ld a, [hld]
@@ -5163,7 +5184,7 @@ GetHPAbsorption:
 HandleBigRoot:
 ; Bonus +30% HP drain (or reduction if Liquid Ooze)
 	push bc
-	predef GetUserItemAfterUnnerve
+	call GetUserItemAfterUnnerve
 	ld a, b
 	pop bc
 	cp HELD_BIG_ROOT
@@ -5937,7 +5958,7 @@ BattleCommand_recoil:
 	call HalveBC
 .recoil_floor
 	call FloorBC
-	predef SubtractHPFromUser
+	farcall SubtractHPFromUser
 .recoil_text
 	ld hl, RecoilText
 	jmp StdBattleTextbox
@@ -6055,6 +6076,7 @@ FinishConfusingTargetAnim:
 	call StdBattleTextbox
 
 	farcall UseOpponentConfusionHealingItem
+	farcall UseOpponentHeldStatusHealingItem
 	farjp RunEnemyStatusHealAbilities
 
 Confuse_CheckSwagger_ConfuseHit:

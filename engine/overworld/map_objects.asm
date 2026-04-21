@@ -263,7 +263,7 @@ GrottoUpdatePlayerTallGrassFlags::
 UpdateTallGrassFlags:
 	ld hl, OBJECT_FLAGS2
 	add hl, bc
-	bit OVERHEAD_F, [hl]
+	bit IN_GRASS_F, [hl]
 	ret z
 	ld hl, OBJECT_TILE_COLLISION
 	add hl, bc
@@ -271,17 +271,17 @@ UpdateTallGrassFlags:
 SetTallGrassFlags:
 	ld hl, OBJECT_FLAGS2
 	add hl, bc
-	cp COLL_OVERHEAD
+	cp COLL_VISUAL_GRASS
 	jr z, .set
 	cp COLL_LONG_GRASS
 	jr z, .set
 	cp COLL_TALL_GRASS
 	jr z, .set
-	res OVERHEAD_F, [hl]
+	res IN_GRASS_F, [hl]
 	ret
 
 .set
-	set OVERHEAD_F, [hl]
+	set IN_GRASS_F, [hl]
 	ret
 
 EndSpriteMovement:
@@ -578,7 +578,10 @@ endr
 	dw .MovementSailboatBottom       ; SPRITEMOVEFN_SAILBOAT_BOTTOM
 	dw .MovementAlolanExeggutor      ; SPRITEMOVEFN_ALOLAN_EXEGGUTOR
 	dw .MovementTinyWindows          ; SPRITEMOVEFN_TINY_WINDOWS
-	dw .MovementMicrophone          ; SPRITEMOVEFN_MICROPHONE
+	dw .MovementMicrophone           ; SPRITEMOVEFN_MICROPHONE
+	dw .MovementBigHoOh              ; SPRITEMOVEFN_BIG_HO_OH
+	dw .MovementBigLugia             ; SPRITEMOVEFN_BIG_LUGIA
+	dw .MovementAdminMeowth          ; SPRITEMOVEFN_ADMIN_MEOWTH
 	assert_table_length NUM_SPRITEMOVEFN
 
 .RandomWalkY:
@@ -798,6 +801,18 @@ endr
 
 .MovementMicrophone:
 	ld a, OBJECT_ACTION_MICROPHONE
+	jr ._ActionA_StepFunction_Standing
+
+.MovementBigHoOh:
+	ld a, OBJECT_ACTION_BIG_HO_OH
+	jr ._ActionA_StepFunction_Standing
+
+.MovementBigLugia:
+	ld a, OBJECT_ACTION_BIG_LUGIA
+	jr ._ActionA_StepFunction_Standing
+
+.MovementAdminMeowth:
+	ld a, OBJECT_ACTION_ADMIN_MEOWTH
 	jr ._ActionA_StepFunction_Standing
 
 .StandingFlip:
@@ -1130,7 +1145,7 @@ StepFunction_NPCJump:
 	call GetNextTile
 	ld hl, OBJECT_FLAGS2
 	add hl, bc
-	res OVERHEAD_F, [hl]
+	res IN_GRASS_F, [hl]
 	jmp IncrementObjectStructField1c
 
 .Land:
@@ -1168,7 +1183,7 @@ StepFunction_PlayerJump:
 	call CopyNextCoordsTileToStandingCoordsTile
 	ld hl, OBJECT_FLAGS2
 	add hl, bc
-	res OVERHEAD_F, [hl]
+	res IN_GRASS_F, [hl]
 	ld hl, wPlayerStepFlags
 	set PLAYERSTEP_STOP_F, [hl]
 	set PLAYERSTEP_MIDAIR_F, [hl]
@@ -1232,7 +1247,7 @@ StepFunction_TeleportFrom:
 	ld [hl], 16
 	ld hl, OBJECT_FLAGS2
 	add hl, bc
-	res OVERHEAD_F, [hl]
+	res IN_GRASS_F, [hl]
 	call IncrementObjectStructField1c
 .DoSpinRise:
 	ld hl, OBJECT_ACTION
@@ -1829,7 +1844,7 @@ StepFunction_PlayerStairs:
 	call CopyNextCoordsTileToStandingCoordsTile
 	ld hl, OBJECT_FLAGS2
 	add hl, bc
-	res OVERHEAD_F, [hl]
+	res IN_GRASS_F, [hl]
 	ld hl, wPlayerStepFlags
 	set PLAYERSTEP_STOP_F, [hl]
 	set PLAYERSTEP_MIDAIR_F, [hl]
@@ -2868,17 +2883,17 @@ InitSprites:
 	and ~(1 << 7)
 	ldh [hCurSpriteTile], a
 	xor a
-	bit 7, [hl]
-	jr nz, .skip1
+	bit 7, [hl] ; tiles $80+ are in VRAM bank 1
+	jr nz, .not_vram1
 	or OAM_BANK1
-.skip1
+.not_vram1
 	ld hl, OBJECT_FLAGS2
 	add hl, bc
 	ld e, [hl]
-	bit OBJ_FLAGS2_7_F, e
-	jr z, .skip2
+	bit UNDER_TILES_F, e
+	jr z, .not_under_tiles
 	or OAM_PRIO
-.skip2
+.not_under_tiles
 	ld hl, OBJECT_PALETTE
 	add hl, bc
 	ld d, a
@@ -2887,10 +2902,10 @@ InitSprites:
 	or d
 	ld d, a
 	xor a
-	bit OVERHEAD_F, e
-	jr z, .skip3
+	bit IN_GRASS_F, e
+	jr z, .not_in_grass
 	or OAM_PRIO
-.skip3
+.not_in_grass
 	ldh [hCurSpriteOAMFlags], a
 	ld hl, OBJECT_SPRITE_X
 	add hl, bc
@@ -2898,7 +2913,7 @@ InitSprites:
 	ld hl, OBJECT_SPRITE_X_OFFSET
 	add hl, bc
 	add [hl]
-	add 8
+	add OAM_X_OFS
 	ld e, a
 	ld a, [wPlayerBGMapOffsetX]
 	add e
@@ -2909,7 +2924,7 @@ InitSprites:
 	ld hl, OBJECT_SPRITE_Y_OFFSET
 	add hl, bc
 	add [hl]
-	add 12
+	add OAM_Y_OFS - 4
 	ld e, a
 	ld a, [wPlayerBGMapOffsetY]
 	add e

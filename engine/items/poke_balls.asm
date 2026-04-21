@@ -125,7 +125,7 @@ CheckCriticalCapture:
 	ld hl, hMultiplier
 	ld [hli], a
 	ld [hli], a
-	ld a, [wBuffer1]
+	ld a, [wFinalCatchRate]
 	ld [hl], a
 
 	farcall Pokedex_CountSeenOwn
@@ -311,7 +311,7 @@ MoonBallMultiplier:
 	and SPECIESFORM_MASK
 	ld b, a
 	; bc = index
-	predef GetEvosAttacksPointer
+	farcall GetEvosAttacksPointer
 	pop bc
 
 	push bc

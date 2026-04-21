@@ -86,15 +86,7 @@ SummaryScreen_GreenPage:
 	farjp PrintItemDescription
 
 .GreenPalettes:
-	RGB 21, 31, 14
-	RGB 31, 31, 31
-	RGB 31, 31, 31
-	RGB 00, 00, 00
-
-	RGB 30, 31, 29
-	RGB 21, 31, 14
-	RGB 31, 31, 31
-	RGB 00, 00, 00
+INCLUDE "gfx/stats/green_page.pal"
 
 .NoHeldItemString:
 	db "No held item@"
@@ -122,12 +114,12 @@ SummaryScreen_GreenPage:
 	rst CopyBytes
 	hlbgcoord 0, 0, wSummaryScreenWindowBuffer
 	ld a, TILEMAP_WIDTH * 2
-	ld [wBuffer1], a
-	predef ListMoves
+	ld [wListMovesLineSpacing], a
+	farcall ListMoves
 	hlbgcoord 4, 1, wSummaryScreenWindowBuffer
 	ld a, TILEMAP_WIDTH * 2
-	ld [wBuffer1], a
-	predef ListMovePP
+	ld [wListMovesLineSpacing], a
+	farcall ListMovePP
 
 for n, NUM_MOVES
 	ld a, [wTempMonMoves + n]
@@ -247,7 +239,7 @@ endr
 
 .description
 	hlcoord 1, 15
-	predef_jump PrintMoveDesc
+	farjp PrintMoveDesc
 
 .String_na:
 	db "---@"

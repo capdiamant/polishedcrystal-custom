@@ -74,20 +74,7 @@ SummaryScreen_Egg:
 	jmp PlaySFX
 
 .EggPalettes:
-	RGB 30, 29, 16
-	RGB 31, 31, 31
-	RGB 31, 31, 31
-	RGB 00, 00, 00
-
-	RGB 31, 31, 29
-	RGB 30, 29, 16
-	RGB 31, 31, 31
-	RGB 00, 00, 00
-
-	RGB 31, 31, 29
-	RGB 30, 29, 16
-	RGB 31, 31, 31
-	RGB 00, 00, 00
+INCLUDE "gfx/stats/egg_page.pal"
 
 .NoString:
 	text "№.???"
@@ -145,11 +132,11 @@ SummaryScreen_Egg:
 	ld [wBoxAlignment], a
 	call SummaryScreen_LoadTextboxSpaceGFX
 	ld de, vTiles2 tile $00
-	predef FrontpicPredef
+	farcall PrepareAnimatedFrontpic
 	pop de
 	hlcoord 0, 1
 	ld d, $0
-	predef LoadMonAnimation
+	farcall LoadMonAnimation
 	ld hl, wSummaryScreenFlags
 	set SUMMARY_FLAGS_DO_ANIM_F, [hl]
 	ret

@@ -80,7 +80,7 @@ CheckHowToEvolve:
 	push hl
 	xor a
 	ld [wMonType], a
-	predef CopyPkmnToTempMon
+	farcall CopyPkmnToTempMon
 	pop hl
 
 .loop
@@ -151,13 +151,11 @@ CheckHowToEvolve:
 	jr .stat_cmp_done
 
 .trade
-	; In modern vanilla, Kadabra evolves anyway. While this is cute, it can
-	; cause problems if a player want to keep the Kadabra upon trade. So don't
-	; let Kadabra bypass Everstone (Maybe in Faithful?)
 	call IsMonHoldingEverstone
 	jmp z, .dont_evolve_2
 
-	; Linking Cord isn't held, it's used as an evo stone.
+	; Linking Cord isn't held, it's used like an evolution stone.
+	; It's stored in the "trade held item" data slot to avoid having two `evo_data` entries.
 	ld a, [hli]
 	ld b, a
 	cp LINKING_CORD
@@ -445,7 +443,8 @@ TryToEvolve:
 	ld c, 40
 	call DelayFrames
 
-	call ClearTileMap
+	call ClearScreen
+	call ApplyAttrAndTilemapInVBlank
 	call UpdateSpeciesNameIfNotNicknamed
 	call GetBaseData
 
@@ -454,7 +453,7 @@ TryToEvolve:
 	farcall GetHyperTraining
 	inc a ; factor in EVs
 	ld b, a
-	predef CalcPkmnStats
+	farcall CalcPkmnStats
 
 	ld a, [wCurPartyMon]
 	ld hl, wPartyMons
@@ -629,7 +628,7 @@ LearnEvolutionMove:
 	call CopyName1
 	ld a, [wCurPartySpecies]
 	push af
-	predef LearnMove
+	farcall LearnMove
 	pop af
 	ld [wCurPartySpecies], a
 	ld [wTempSpecies], a
@@ -686,7 +685,7 @@ LearnLevelMoves:
 	call CopyName1
 	ld a, [wCurPartySpecies]
 	push af
-	predef LearnMove
+	farcall LearnMove
 	pop af
 	ld [wCurPartySpecies], a
 	ld [wTempSpecies], a
@@ -800,7 +799,7 @@ ShiftMoves:
 EvoFlagAction:
 	push de
 	ld d, $0
-	predef FlagPredef
+	farcall SmallFlagAction
 	pop de
 	ret
 

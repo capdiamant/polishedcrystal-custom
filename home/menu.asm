@@ -377,11 +377,13 @@ YesNoMenuDataHeader::
 	dw .MenuData2
 	db 1 ; default option
 
-.MenuData2
-	db $c0 ; flags
+.MenuData2:
+	db STATICMENU_CURSOR | STATICMENU_NO_TOP_SPACING ; flags
 	db 2
+YesString::
 	db "Yes@"
-	db "No@"
+NoString::
+	db "No @"
 
 NoYesMenuDataHeader::
 	db MENU_BACKUP_TILES
@@ -389,8 +391,8 @@ NoYesMenuDataHeader::
 	dw .MenuData2
 	db 1 ; default option
 
-.MenuData2
-	db $c0 ; flags
+.MenuData2:
+	db STATICMENU_CURSOR | STATICMENU_NO_TOP_SPACING ; flags
 	db 2
 	db "No@"
 	db "Yes@"
@@ -697,28 +699,6 @@ _2DMenu::
 	ld [wMenuData_2DMenuItemStringsBank], a
 	farcall _2DMenu_
 	ld a, [wMenuCursorBuffer]
-	ret
-
-SetMenuAttributes::
-	push hl
-	push bc
-	ld hl, w2DMenuCursorInitY
-	ld b, $8
-.loop
-	ld a, [de]
-	inc de
-	ld [hli], a
-	dec b
-	jr nz, .loop
-	ld a, $1
-	ld [hli], a
-	ld [hli], a
-	xor a
-	ld [hli], a
-	ld [hli], a
-	ld [hl], a
-	pop bc
-	pop hl
 	ret
 
 DoMenuJoypadLoop::

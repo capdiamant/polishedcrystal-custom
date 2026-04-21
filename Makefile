@@ -1,6 +1,7 @@
 NAME := polishedcrystal
 MODIFIERS :=
 VERSION := 3.2.3
+AUTHOR := RANGI42
 
 ROM_NAME = $(NAME)$(MODIFIERS)-$(VERSION)
 EXTENSION := gbc
@@ -10,6 +11,8 @@ MCODE := PKPC
 ROMVERSION := 0x32
 
 FILLER := 0xff
+
+COPYRIGHT = @$(shell date '+%Y') $(AUTHOR) v$(VERSION)
 
 ifneq ($(wildcard rgbds/.*),)
 RGBDS ?= rgbds/
@@ -37,6 +40,7 @@ RGBGFXFLAGS    = -Weverything
 ifeq ($(filter faithful,$(MAKECMDGOALS)),faithful)
 MODIFIERS := $(MODIFIERS)-faithful
 RGBASMFLAGS += -DFAITHFUL
+COPYRIGHT += F
 endif
 ifeq ($(filter monochrome,$(MAKECMDGOALS)),monochrome)
 MODIFIERS := $(MODIFIERS)-monochrome
@@ -53,6 +57,7 @@ endif
 ifeq ($(filter debug,$(MAKECMDGOALS)),debug)
 MODIFIERS := $(MODIFIERS)-debug
 RGBASMFLAGS += -DDEBUG
+COPYRIGHT += dbg
 endif
 ifeq ($(filter pocket,$(MAKECMDGOALS)),pocket)
 MODIFIERS :=
@@ -109,7 +114,7 @@ tools:
 	$(MAKE) -C tools/
 
 clean: tidy
-	find gfx maps data/tilesets -name '*.lz' -delete
+	find gfx maps data/tilesets -name '*.lzp' -delete
 	find gfx \( -name '*.[12]bpp' -o -name '*.2bpp.vram[012]' -o -name '*.2bpp.vram[012]p' \) -delete
 	find gfx/pokemon -mindepth 1 \( -name 'bitmask.asm' -o -name 'frames.asm' \
 		-o -name 'front.animated.tilemap' -o -name 'front.dimensions' \) -delete
@@ -118,7 +123,7 @@ clean: tidy
 
 tidy:
 	$(RM) $(crystal_obj) $(crystal_vc_obj) $(wildcard $(NAME)-*.gbc) $(wildcard $(NAME)-*.pocket) $(wildcard $(NAME)-*.bsp) \
-		$(wildcard $(NAME)-*.map) $(wildcard $(NAME)-*.sym) $(wildcard $(NAME)-*.patch) rgbdscheck.o
+		$(wildcard $(NAME)-*.map) $(wildcard $(NAME)-*.sym) $(wildcard $(NAME)-*.patch) rgbdscheck.o $(wildcard gfx/title/version.2bpp*)
 
 freespace: crystal tools/bankends
 	tools/bankends $(ROM_NAME).map > bank_ends.txt
@@ -174,6 +179,7 @@ gfx/battle/lyra_back.2bpp: RGBGFXFLAGS += -Z
 gfx/battle/substitute-back.2bpp: RGBGFXFLAGS += -Z
 gfx/battle/substitute-front.2bpp: RGBGFXFLAGS += -Z
 gfx/battle/ghost.2bpp: RGBGFXFLAGS += -Z
+gfx/battle/hpexpbar.2bpp: tools/gfx += --trim-whitespace
 
 gfx/battle_anims/angels.2bpp: tools/gfx += --trim-whitespace
 gfx/battle_anims/beam.2bpp: tools/gfx += --remove-xflip --remove-yflip --remove-whitespace
@@ -194,6 +200,8 @@ gfx/battle_anims/status.2bpp: tools/gfx += --remove-whitespace
 
 gfx/card_flip/card_flip_1.2bpp: tools/gfx += --trim-whitespace
 gfx/card_flip/card_flip_2.2bpp: tools/gfx += --remove-whitespace
+
+gfx/evo/bubble.2bpp: tools/gfx += --trim-whitespace
 
 gfx/font/%.1bpp: tools/gfx += --trim-whitespace
 gfx/font/space.2bpp: tools/gfx =
@@ -220,8 +228,10 @@ gfx/paintings/%.2bpp: RGBGFXFLAGS += -Z
 gfx/player/chris_back.2bpp: RGBGFXFLAGS += -Z
 gfx/player/kris_back.2bpp: RGBGFXFLAGS += -Z
 gfx/player/crys_back.2bpp: RGBGFXFLAGS += -Z
+gfx/player/beta_back.2bpp: RGBGFXFLAGS += -Z
 
 gfx/pokedex/%.bin: gfx/pokedex/%.tilemap gfx/pokedex/%.attrmap ; $Qcat $^ > $@
+gfx/pokedex/oam.2bpp: tools/gfx += --trim-whitespace
 gfx/pokedex/pokedex.2bpp: gfx/pokedex/pokedex0.2bpp gfx/pokedex/pokedex1.2bpp gfx/pokedex/area.2bpp ; $Qcat $^ > $@
 gfx/pokedex/question_mark.2bpp: RGBGFXFLAGS += -Z
 
@@ -236,10 +246,21 @@ gfx/slots/slots_1.2bpp: tools/gfx += --trim-whitespace
 gfx/slots/slots_2.2bpp: tools/gfx += --interleave --png=$<
 gfx/slots/slots_3.2bpp: tools/gfx += --interleave --png=$< --remove-duplicates --keep-whitespace --remove-xflip
 
+gfx/splash/copyright.2bpp: gfx/splash/copyright.txt tools/fine_print.c
+	$Qtools/fine_print -c 013 -s 0 '$(shell cat $<)' $@
+
+gfx/stats/%.bin: gfx/stats/%.tilemap gfx/stats/%.attrmap ; $Qcat $^ > $@
 gfx/stats/judge.2bpp: tools/gfx += --trim-whitespace
 
 gfx/title/crystal.2bpp: tools/gfx += --interleave --png=$<
-gfx/title/logo_version.2bpp: gfx/title/logo.2bpp gfx/title/version.2bpp ; $Qcat $^ > $@
+
+gfx/title/version.2bpp: Makefile tools/fine_print.c
+	$Qtools/fine_print -e 20 '$(COPYRIGHT)' $@
+
+gfx/title/suicune_unowns.2bpp: RGBGFXFLAGS += --unique-tiles --nb-tiles 127,127 --base-tiles 0,128
+gfx/title/suicune_unowns.tilemap: RGBGFXFLAGS += --unique-tiles --nb-tiles 127,127 --base-tiles 0,128
+gfx/title/suicune_unowns.tilemap: gfx/title/suicune_unowns.png
+	$Q$(RGBGFX) -c dmg $(RGBGFXFLAGS) -t $@ $<
 
 gfx/town_map/town_map.2bpp: tools/gfx += --trim-whitespace
 
@@ -253,6 +274,7 @@ gfx/trade/trade_screen.2bpp: gfx/trade/border.2bpp gfx/trade/textbox.2bpp ; $Qca
 gfx/trainer_card/chris_card.2bpp: RGBGFXFLAGS += -Z
 gfx/trainer_card/kris_card.2bpp: RGBGFXFLAGS += -Z
 gfx/trainer_card/crys_card.2bpp: RGBGFXFLAGS += -Z
+gfx/trainer_card/beta_card.2bpp: RGBGFXFLAGS += -Z
 
 gfx/trainers/%.2bpp: RGBGFXFLAGS += -Z
 
@@ -271,7 +293,8 @@ gfx/pokemon/%/frames.asm: gfx/pokemon/%/front.animated.tilemap gfx/pokemon/%/fro
 	$Qtools/pokemon_animation -f $^ > $@
 
 
-%.lz: %
+
+%.lzp: %
 	$Qtools/lzcomp -- $< $@
 
 #%.4bpp: %.png

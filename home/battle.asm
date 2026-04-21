@@ -189,7 +189,7 @@ FloorBC::
 	ret
 
 GetMaxHP::
-; output: bc, wBuffer1-2
+; output: bc, wHPBuffer1-2
 	farcall GetFutureSightUser
 	jr z, .not_external
 	ld a, MON_MAXHP
@@ -200,11 +200,11 @@ GetMaxHP::
 	call GetUserMonAttr
 .got_maxhp
 	ld a, [hli]
-	ld [wBuffer2], a
+	ld [wHPBuffer1 + 1], a
 	ld b, a
 
 	ld a, [hl]
-	ld [wBuffer1], a
+	ld [wHPBuffer1], a
 	ld c, a
 	ret
 
@@ -472,35 +472,50 @@ GetTrueUserAbility:
 ; Get true user ability after Neutralizing Gas.
 ; A "true" user might be external, if Future Sight is active.
 	farcall GetFutureSightUser
-	jr z, .not_external
+	jr z, GetUserAbility
 
 	; External users have no ability.
 	xor a
 	ret
 
-.not_external
+GetUserAbility:
 	call StackCallOpponentTurn
 GetOpponentAbility::
 	; Get opponent ability.
-	ld a, BATTLE_VARS_ABILITY_OPP
-	call GetBattleVar
-	push af
+	farjp _GetOpponentAbility
 
-	; Check if it's suppressed by Neutralizing Gas.
-	ld a, BATTLE_VARS_ABILITY
-	call GetBattleVar
-	cp NEUTRALIZING_GAS
-	jr nz, .not_suppressed
-	pop af
-	push hl
-	farcall AbilityCanBeSuppressed
-	pop hl
-	ret c
-	xor a
+; These return z if they can be copied/traced/etc.
+AbilityCanBeCopied:
+	push bc
+	ld c, ABILFLAG_NO_COPY
+	jr CheckAbilityFlag
+AbilityCanBeTraced:
+	push bc
+	ld c, ABILFLAG_NO_TRACE
+	jr CheckAbilityFlag
+AbilityCanBeSwapped:
+	push bc
+	ld c, ABILFLAG_NO_SWAP
+	jr CheckAbilityFlag
+AbilityCanBeSuppressed:
+	push bc
+	ld c, ABILFLAG_NO_SUPPRESS
+	; fallthrough
+CheckAbilityFlag:
+	ld b, a
+	call GetAbilityFlags
+	and c
+	ld a, b
+	pop bc
 	ret
-
-.not_suppressed
-	pop af
+AbilityCanBeIgnored:
+	push bc
+	ld b, a
+	call GetAbilityFlags
+	and ABILFLAG_IGNORABLE
+	xor ABILFLAG_IGNORABLE
+	ld a, b
+	pop bc
 	ret
 
 GetTrueUserIgnorableAbility::
@@ -513,6 +528,9 @@ GetOpponentIgnorableAbility::
 ; Similar to above, except checking the opponent's Ability and
 ; doesn't check for Future Sight.
 	farjp _GetOpponentIgnorableAbility
+GetAbilityFlags:
+; return flags for ability in a.
+	farjp _GetAbilityFlags
 
 ; These routines return z if the user is of the given type
 CheckIfTargetIsGrassType::
@@ -623,6 +641,13 @@ CheckIfHPIsZero::
 	or [hl]
 	ret
 
+GetSolarizedWeather::
+; Returns harsh sunlight and z if user's ability is Mega Sol.
+	call GetTrueUserIgnorableAbility
+	cp MEGA_SOL
+	ld a, WEATHER_SUN
+	ret
+
 GetWeatherAfterOpponentUmbrella::
 	call StackCallOpponentTurn
 GetWeatherAfterUserUmbrella::
@@ -635,7 +660,7 @@ GetWeatherAfterUserUmbrella::
 	ret z
 	push bc
 	push hl
-	predef GetUserItemAfterUnnerve
+	farcall GetUserItemAfterUnnerve
 	ld a, b
 	xor HELD_UTILITY_UMBRELLA
 	pop hl
@@ -682,7 +707,7 @@ CheckMoveSpeed::
 	ldh [hBattleTurn], a
 	ld a, d ; +1/+2: player, -1/-2: enemy, 0: both/neither
 	and a
-	jr z, CheckSpeed
+	jmp z, CheckSpeed
 	dec a
 	ret z
 	dec a
@@ -719,7 +744,7 @@ CheckMoveSpeed::
 	jr .go_first
 
 .quick_draw_done
-	predef GetUserItemAfterUnnerve
+	farcall GetUserItemAfterUnnerve
 	ld a, b
 	cp HELD_QUICK_CLAW
 	jr z, .quick_claw
@@ -749,7 +774,7 @@ CheckMoveSpeed::
 .activate_item
 	push de
 	farcall ItemRecoveryAnim
-	predef GetUserItemAfterUnnerve
+	farcall GetUserItemAfterUnnerve
 	call GetCurItemName
 	ld hl, BattleText_UserItemLetItMoveFirst
 	call StdBattleTextbox

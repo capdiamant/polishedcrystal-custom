@@ -105,103 +105,17 @@ wTempoAdjustment:: db
 ; audio engine output
 wNoiseHit:: db
 
-SECTION "WRAM 0", WRAM0
 
-wMonType:: db
+SECTION "Video", WRAM0
 
-wCurSpecies::
-wCurMove::
-wCreditsSpawn::
-	db
+wBGMapBuffer:: ds 48
+wBGMapBufferEnd::
+wBGMapPalBuffer:: ds 48
+wBGMapPalBufferEnd::
+wBGMapBufferPtrs:: ds 48 ; 24 bg map addresses (16x8 tiles)
 
-wTimeSinceText:: db
+wTileAnimationTimer:: db
 
-wCurOptionsPage:: db
-
-wBattleTowerBattleEnded::
-	db
-
-wCurForm:: db
-
-wRNGState:: ds 4
-wRNGCumulativeDividerPlus:: dw
-wRNGCumulativeDividerMinus:: db
-
-wBoxAlignment:: db
-wInputType:: db
-wAutoInputAddress:: dw
-wAutoInputBank:: db
-wAutoInputLength:: db
-
-wMonStatusFlags:: db
-wGameLogicPaused:: db
-wSpriteUpdatesEnabled:: db
-wMapTimeOfDay:: db
-
-wPrevDexEntry:: db
-
-wPrevLandmark:: db
-wCurLandmark:: db
-wLandmarkSignTimer:: dw
-wLinkMode::
-; 0 not in link battle
-; 1 link battle
-; 4 mobile battle
-	db
-
-wPlayerNextMovement:: db
-wPlayerMovement:: db
-
-wMovementObject:: db
-wMovementDataPointer:: ds 3 ; dba
-
-wMovementByteWasControlSwitch:: db
-
-UNION
-wObjectPriorities:: ds NUM_OBJECT_STRUCTS
-NEXTU
-wMovementPointer:: dw
-	ds 2
-wTempObjectCopyMapObjectIndex:: db
-wTempObjectCopySprite:: db
-wTempObjectCopySpriteVTile:: db
-wTempObjectCopyPalette:: db
-wTempObjectCopyMovement:: db
-wTempObjectCopyRange:: db
-wTempObjectCopyX:: db
-wTempObjectCopyY:: db
-wTempObjectCopyRadius:: db
-ENDU
-
-wTileDown:: db
-wTileUp:: db
-wTileLeft:: db
-wTileRight:: db
-
-wTilePermissions::
-; set if tile behavior prevents
-; you from walking in that direction
-; bit 3: down
-; bit 2: up
-; bit 1: left
-; bit 0: right
-	db
-
-wPanningAroundTinyMap:: db
-wSavedXCoord:: db
-
-wLinkOtherPlayerGameID:: db
-wLinkOtherPlayerVersion:: dw
-wLinkOtherPlayerMinTradeVersion:: dw
-wLinkOtherPlayerGender:: db
-
-wPalFlags:: db
-
-wPlayerCurrentOAMSlot:: db
-
-wMapSetupFlags:: db
-
-wPrinterConnectionOpen:: db
 
 SECTION "Sprite Animations", WRAM0
 
@@ -338,6 +252,7 @@ SECTION UNION "Misc 404", WRAM0
 wLinkMisc:: ds 10
 wLinkPlayerFixedPartyMon1ID:: ds 3
 	ds 37
+
 
 SECTION UNION "Misc 404", WRAM0
 ; polished link transfer buffer
@@ -874,27 +789,15 @@ wPuzzlePieces:: ds 6 * 6
 wUnownPuzzleEnd::
 
 
-SECTION "Footprint Queue", WRAM0
-; volatile footprints in sand
-
-wFootprintQueue:: ds 3 * 2 + 1
-
-
-SECTION "Unused", WRAM0
-
-	ds 69 ; it's free real estate
-
-
-SECTION UNION "Misc 1326", WRAM0
+SECTION UNION "Misc 1300", WRAM0
 ; overworld map
 
-; large enough for 45x20 NavelRockInside.ablk; (45+6)x(20+6) = 1326
-; was originally only 1300 bytes
-wOverworldMapBlocks:: ds 1326
+; large enough for 32x27 Route41.ablk; (32+6)x(27+6) = 1254
+wOverworldMapBlocks:: ds 1300
 wOverworldMapBlocksEnd::
 
 
-SECTION UNION "Misc 1326", WRAM0
+SECTION UNION "Misc 1300", WRAM0
 ; psychic inver party
 
 ; large enough for 4x4 KantoHouse1.asm in wOverworldMapBlocks
@@ -911,18 +814,18 @@ wInverGroup::
 	endr
 
 
-SECTION UNION "Misc 1326", WRAM0
+SECTION UNION "Misc 1300", WRAM0
 ; credits image
 
-wCreditsBlankFrame2bpp:: ds 8 * 8 * 2
+wCreditsBlankFrame2bpp:: ds 16 tiles
 
 
-SECTION UNION "Misc 1326", WRAM0
+SECTION UNION "Misc 1300", WRAM0
 ; Bill's PC
 
 	; LCD hblank code block. Labels are defined as part of the code.
 	ds $cf
-	assert BillsPC_LCDCode.End - BillsPC_LCDCode == @ - STARTOF("Misc 1326")
+	assert BillsPC_LCDCode.End - BillsPC_LCDCode == @ - STARTOF("Misc 1300")
 
 ; If you change ordering of this, remember to fix LCD hblank code too.
 ; Note that (as of when comment was written), hblank can't always keep up
@@ -996,19 +899,21 @@ wSummaryMoveSwap:: db
 
 ; Used to align window buffer for DMA copying
 ; Feel free to use or move data, an assert will fail if the memory becomes misaligned
-ds 13
+ds 9
 assert @ % 16 == 0
 
 wSummaryScreenWindowBuffer:: ds 32 * 10
+wSummaryScreenPPTileBuffer:: ds 3 * TILE_1BPP_SIZE
 
-SECTION UNION "Misc 1326", WRAM0
+
+SECTION UNION "Misc 1300", WRAM0
 ; raw link data
 
 wLinkData:: ds 1300
 wLinkDataEnd::
 
 
-SECTION UNION "Misc 1326", WRAM0
+SECTION UNION "Misc 1300", WRAM0
 ; link data members
 
 wLinkPlayerName:: ds NAME_LENGTH
@@ -1041,7 +946,7 @@ wLinkPatchList2:: ds SERIAL_PATCH_LIST_LENGTH
 ENDU
 
 
-SECTION UNION "Misc 1326", WRAM0
+SECTION UNION "Misc 1300", WRAM0
 ; link mail data
 	ds 500
 
@@ -1060,7 +965,7 @@ wLinkOTMailEnd::
 	ds 10
 
 
-SECTION UNION "Misc 1326", WRAM0
+SECTION UNION "Misc 1300", WRAM0
 ; received link mail data
 	ds 500
 
@@ -1068,7 +973,7 @@ wLinkReceivedMail:: ds MAIL_STRUCT_LENGTH * PARTY_LENGTH
 wLinkReceivedMailEnd:: db
 
 
-SECTION UNION "Misc 1326", WRAM0
+SECTION UNION "Misc 1300", WRAM0
 
 ; GB Printer data
 wGameboyPrinterRAM::
@@ -1105,19 +1010,107 @@ wGameboyPrinterRAMEnd::
 wPrinterOpcode:: db
 
 
-SECTION "Video", WRAM0
+SECTION UNION "Misc 1300", WRAM0
 
-wBGMapBuffer:: ds 48
-wBGMapBufferEnd::
-wBGMapPalBuffer:: ds 48
-wBGMapPalBufferEnd::
-wBGMapBufferPtrs:: ds 48 ; 24 bg map addresses (16x8 tiles)
-
-wTileAnimBuffer:: ds 1 tiles
-wTileAnimationTimer:: db
+wMPNotes:: ds 3 * 256
 
 
-SECTION "More WRAM 0", WRAM0
+SECTION "WRAM 0", WRAM0
+
+wMonType:: db
+
+wCurSpecies::
+wCurMove::
+wCreditsSpawn::
+	db
+
+wTimeSinceText:: db
+
+wCurOptionsPage:: db
+
+wBattleTowerBattleEnded:: db
+
+wCurForm:: db
+
+wRNGState:: ds 4
+wRNGCumulativeDividerPlus:: dw
+wRNGCumulativeDividerMinus:: db
+
+wBoxAlignment:: db
+wInputType:: db
+wAutoInputAddress:: dw
+wAutoInputBank:: db
+wAutoInputLength:: db
+
+wMonStatusFlags:: db
+wGameLogicPaused:: db
+wSpriteUpdatesEnabled:: db
+wMapTimeOfDay:: db
+
+wPrevDexEntry:: db
+
+wPrevLandmark:: db
+wCurLandmark:: db
+wLandmarkSignTimer:: dw
+wLinkMode::
+; 0 not in link battle
+; 1 link battle
+; 4 mobile battle
+	db
+
+wPlayerNextMovement:: db
+wPlayerMovement:: db
+
+wMovementObject:: db
+wMovementDataPointer:: ds 3 ; dba
+
+wMovementByteWasControlSwitch:: db
+
+UNION
+wObjectPriorities:: ds NUM_OBJECT_STRUCTS
+NEXTU
+wMovementPointer:: dw
+	ds 2
+wTempObjectCopyMapObjectIndex:: db
+wTempObjectCopySprite:: db
+wTempObjectCopySpriteVTile:: db
+wTempObjectCopyPalette:: db
+wTempObjectCopyMovement:: db
+wTempObjectCopyRange:: db
+wTempObjectCopyX:: db
+wTempObjectCopyY:: db
+wTempObjectCopyRadius:: db
+ENDU
+
+wTileDown:: db
+wTileUp:: db
+wTileLeft:: db
+wTileRight:: db
+
+wTilePermissions::
+; set if tile behavior prevents
+; you from walking in that direction
+; bit 3: down
+; bit 2: up
+; bit 1: left
+; bit 0: right
+	db
+
+wPanningAroundTinyMap:: db
+wSavedXCoord:: db
+
+wLinkOtherPlayerGameID:: db
+wLinkOtherPlayerVersion:: dw
+wLinkOtherPlayerMinTradeVersion:: dw
+wLinkOtherPlayerGender:: db
+
+wPalFlags:: db
+
+wPlayerCurrentOAMSlot:: db
+
+wMapSetupFlags:: db
+
+wPrinterConnectionOpen:: db
 
 wMemCGBLayout:: db
 
@@ -1393,7 +1386,7 @@ wPrevWeather:: db
 wCurWeather:: db
 wPrevOvercastIndex:: db
 
-wPalStateIndex:: db
+wPalState:: db
 wPalWhiteState:: db
 
 wPalStates::
@@ -1409,11 +1402,24 @@ wCurPalDarknessState:: db
 wCurPalOvercastIndexState:: db
 wCurPalTimeOfDayPalState:: db
 
+; volatile footprints in sand
+wFootprintQueue:: ds 3 * 2 + 1
+
+wColoredMaleFemaleShinyTiles:: ds 3 tiles
+
+
+SECTION "Unused", WRAM0
+
+	ds 318 ; it's free real estate
+
 
 SECTION "Options", WRAM0
 
 wOptions3::
 ; bit 0: keyword abc/qwerty
+; bit 1: nicknames always ("Yes")
+; bit 2: nicknames never ("No")
+; (bits 1 and 2 are never both set; both clear = "Ask")
 ; bits 3-7: unused
 	db
 
@@ -1485,6 +1491,7 @@ wDaysSince:: db
 ; Temporary backup for options
 wOptionsBuffer:: db
 
+
 SECTION "SRAM Access Count", WRAM0
 
 ; Contains a count of the number of times SRAM has been opened in a
@@ -1492,7 +1499,8 @@ SECTION "SRAM Access Count", WRAM0
 ; when loading a savestate.
 wSRAMAccessCount:: db
 
-SECTION "Rom Checksum", WRAM0
+
+SECTION "ROM Checksum", WRAM0
 
 ; Contains a copy of the rom checksum, read from the header. Used as
 ; protection against people trying to load a save state for a save in

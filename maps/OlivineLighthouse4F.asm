@@ -20,7 +20,7 @@ OlivineLighthouse4F_MapScriptHeader:
 	def_bg_events
 
 	def_object_events
-	object_event  7, 14, SPRITE_SAILOR, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, 0, OBJECTTYPE_TRAINER, 3, TrainerSailorKent, -1
+	object_event  7, 14, SPRITE_SAILOR, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, PAL_NPC_DARK_BLUE, OBJECTTYPE_TRAINER, 3, TrainerSailorKent, -1
 	object_event 11,  2, SPRITE_LASS, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, 0, OBJECTTYPE_GENERICTRAINER, 1, GenericTrainerLassConnie, EVENT_OLIVINE_LIGHTHOUSE_JASMINE
 
 GenericTrainerLassConnie:
@@ -40,13 +40,20 @@ GenericTrainerLassConnie:
 	done
 
 TrainerSailorKent:
-	trainer SAILOR, KENT, EVENT_BEAT_SAILOR_KENT, SailorKentSeenText, SailorKentBeatenText, 0, SailorKentScript
+	trainer SAILOR, KENT, EVENT_BEAT_SAILOR_KENT, SailorKentSeenText, SailorKentBeatenText, 0, SailorKentScript, TRAINERPAL_DARK_SAILOR
 
 SailorKentScript:
 	endifjustbattled
 	checkevent EVENT_JASMINE_RETURNED_TO_GYM
 	iftrue_jumptextfaceplayer SailorKentFinalText
-	jumptextfaceplayer SailorKentAfterBattleText
+	jumpthistextfaceplayer
+
+	text "Speaking of sick,"
+	line "I've heard there's"
+
+	para "a good Pharmacy in"
+	line "Cianwood."
+	done
 
 SailorKentSeenText:
 	text "Jasmine must be"
@@ -60,14 +67,6 @@ SailorKentSeenText:
 SailorKentBeatenText:
 	text "I can't manage a"
 	line "smile either…"
-	done
-
-SailorKentAfterBattleText:
-	text "Speaking of sick,"
-	line "I've heard there's"
-
-	para "a good Pharmacy in"
-	line "Cianwood."
 	done
 
 SailorKentFinalText:

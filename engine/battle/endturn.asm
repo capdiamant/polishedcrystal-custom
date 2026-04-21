@@ -268,13 +268,18 @@ HandleWeather:
 .do_it
 	call HasUserFainted
 	ret z
-	predef GetUserItemAfterUnnerve
+	farcall GetUserItemAfterUnnerve
 	ld a, b
 	cp HELD_SAFETY_GOGGLES
 	jr z, .run_weather_abilities
 	call GetWeatherAfterUserUmbrella
 	cp WEATHER_HAIL
 	call z, .HandleHail
+
+	; Avoid chained weather damage. This can happen if the user faints from Hail
+	; and has Neutralizing Gas, triggering foe's Sand Stream after faint.
+	call HasUserFainted
+	ret z
 	call GetWeatherAfterUserUmbrella
 	cp WEATHER_SANDSTORM
 	call z, .HandleSandstorm
@@ -320,7 +325,7 @@ HandleWeather:
 	ld hl, SandstormHitsText
 	call StdBattleTextbox
 	call GetSixteenthMaxHP
-	predef_jump SubtractHPFromUser
+	farjp SubtractHPFromUser
 
 .HandleHail
 	ld a, BATTLE_VARS_SUBSTATUS3
@@ -359,7 +364,7 @@ endc
 	ld hl, HailHitsText
 	call StdBattleTextbox
 	call GetSixteenthMaxHP
-	predef_jump SubtractHPFromUser
+	farjp SubtractHPFromUser
 
 WeatherEndedMessages:
 	farbank BattleText
@@ -375,7 +380,7 @@ HandleAffectionSelfCure:
 
 .do_it
 	farcall CheckAffection
-	cp 2
+	cp AFFECTION_LEVEL_2
 	ret c
 
 	; 20% to heal a status problem.
@@ -478,7 +483,7 @@ HandleLeftovers:
 
 	; damage instead
 	call GetEighthMaxHP
-	predef SubtractHPFromUser
+	farcall SubtractHPFromUser
 	ld hl, BattleText_UserHurtByItem
 	jr .print
 .leftovers
@@ -524,7 +529,7 @@ HandleLeechSeed:
 
 	call GetEighthMaxHP
 	push bc
-	predef SubtractHPFromUser
+	farcall SubtractHPFromUser
 	ld hl, LeechSeedSapsText
 	call StdBattleTextbox
 	pop bc
@@ -540,7 +545,7 @@ HandleLeechSeed:
 .hurt
 	farcall BeginAbility
 	farcall ShowEnemyAbilityActivation
-	predef SubtractHPFromUser
+	farcall SubtractHPFromUser
 	ld hl, SuckedUpOozeText
 	call StdBattleTextbox
 	farcall EndAbility
@@ -614,7 +619,7 @@ DoPoisonBurnDamage:
 	ld b, h
 	ld c, l
 .did_toxic
-	predef_jump SubtractHPFromUser
+	farjp SubtractHPFromUser
 
 IncrementToxic:
 ; Returns nz if we are badly poisoned, and sets hl to the current toxic counter.
@@ -663,7 +668,7 @@ HandleCurse:
 	ld de, ANIM_UNDER_CURSE
 	farcall PlayBattleAnimDE_OnlyIfVisible
 	call GetQuarterMaxHP
-	predef SubtractHPFromUser
+	farcall SubtractHPFromUser
 	ld hl, HurtByCurseText
 	jmp StdBattleTextbox
 
@@ -709,7 +714,7 @@ HandleWrap:
 	xor a
 	ld [wNumHits], a
 	ld [wFXAnimIDHi], a
-	predef PlayBattleAnim
+	farcall PlayBattleAnim
 	call SwitchTurn
 
 .skip_anim
@@ -722,7 +727,7 @@ HandleWrap:
 .no_binding_band
 	call GetEighthMaxHP
 .subtract_hp
-	predef SubtractHPFromUser
+	farcall SubtractHPFromUser
 	ld hl, BattleText_UsersHurtByStringBuffer1
 
 .print_text
@@ -863,7 +868,7 @@ HandlePerishSong:
 	ret nz
 
 	call GetMaxHP
-	predef_jump SubtractHPFromUser
+	farjp SubtractHPFromUser
 
 HandleTrickRoom:
 	ld hl, wTrickRoom
@@ -883,7 +888,7 @@ HandleLeppaBerry:
 .do_it
 	call HasUserFainted
 	ret z
-	predef GetUserItemAfterUnnerve
+	farcall GetUserItemAfterUnnerve
 	ld a, b
 	cp HELD_RESTORE_PP
 	ret nz
