@@ -309,7 +309,7 @@
 	end_grass_wildmons
 
 	def_grass_wildmons NEW_TH_KIRI
-	db 10 percent, 10 percent, 10 percent ; encounter rates: morn/day/nite
+	db 10 percent ; encounter rate
 	; morn
 	wildmon 1, BULBASAUR
 	wildmon 2, IVYSAUR
@@ -337,7 +337,7 @@
 	end_grass_wildmons
 
 	def_grass_wildmons NEW_TH_KIRI_BAWAH
-	db 10 percent, 10 percent, 10 percent ; encounter rates: morn/day/nite
+	db 10 percent ; encounter rate
 	; morn
 	wildmon 1, BULBASAUR
 	wildmon 2, IVYSAUR
@@ -365,7 +365,7 @@
 	end_grass_wildmons
 
 	def_grass_wildmons NEW_UJIAN_HUTAN
-	db 10 percent, 10 percent, 10 percent ; encounter rates: morn/day/nite
+	db 10 percent ; encounter rate
 	; morn
 	wildmon 1, BULBASAUR
 	wildmon 2, IVYSAUR
