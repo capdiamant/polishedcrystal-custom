@@ -755,7 +755,7 @@ _OpenTempmonSummary:
 	call LowVolume
 	ld a, TEMPMON
 	ld [wMonType], a
-	predef SummaryScreenInit
+	farcall SummaryScreenInit
 	; check if the cry is still playing
 	call CheckSFX
 	ld a, MAX_VOLUME
@@ -1404,7 +1404,7 @@ GetForgottenMoves::
 	and SPECIESFORM_MASK
 	ld b, a
 	; bc = index
-	predef GetEvosAttacksPointer
+	farcall GetEvosAttacksPointer
 .skip_evos
 	ld a, BANK(EvosAttacks)
 	call GetFarByte
@@ -1485,6 +1485,7 @@ SetUpMoveScreenBG:
 	ld a, CGB_PARTY_MENU
 	call GetCGBLayout
 	call LoadFontsBattleExtra
+	farcall LoadBoldPDoubled
 	call ClearSpriteAnims2
 	ld a, [wTempMonSpecies]
 	ld [wTempIconSpecies], a
@@ -1527,9 +1528,9 @@ MoveScreen_ListMoves:
 	ld bc, NUM_MOVES
 	rst CopyBytes
 	ld a, SCREEN_WIDTH * 2 ; move list spacing
-	ld [wBuffer1], a
+	ld [wListMovesLineSpacing], a
 	hlcoord 2, 3
-	predef ListMoves
+	farcall ListMoves
 
 	; Get PP -- either current PP, or default PP for the move
 	ld a, [wMoveScreenMode]
@@ -1583,7 +1584,7 @@ MoveScreen_ListMoves:
 .got_pp
 	; Now we have things set up correctly
 	hlcoord 10, 4
-	predef ListMovePP
+	farcall ListMovePP
 	hlcoord 1, 12, wAttrmap
 	ld bc, 6
 	xor a
@@ -1732,7 +1733,7 @@ MoveScreen_ListMovesFast:
 
 .description
 	hlcoord 1, 14
-	predef PrintMoveDesc
+	farcall PrintMoveDesc
 	ld a, $1
 	ldh [hBGMapMode], a
 	ret

@@ -1,7 +1,7 @@
 OlivinePort_MapScriptHeader:
 	def_scene_scripts
-	scene_script OlivinePortTrigger0
-	scene_script OlivinePortTrigger1
+	scene_script OlivinePortAskEnterShipScene, SCENE_OLIVINEPORT_ASK_ENTER_SHIP
+	scene_script OlivinePortLeaveShipScene, SCENE_OLIVINEPORT_LEAVE_SHIP
 
 	def_callbacks
 
@@ -11,7 +11,7 @@ OlivinePort_MapScriptHeader:
 	warp_event  7, 15, FAST_SHIP_1F, 1
 
 	def_coord_events
-	coord_event  7,  7, 0, OlivinePortWalkUpToShipScript
+	coord_event  7,  7, SCENE_OLIVINEPORT_ASK_ENTER_SHIP, OlivinePortWalkUpToShipScript
 
 	def_bg_events
 	bg_event  1, 14, BGEVENT_ITEM + PROTEIN, EVENT_OLIVINE_PORT_HIDDEN_PROTEIN
@@ -24,21 +24,21 @@ OlivinePort_MapScriptHeader:
 	object_event  6,  7, SPRITE_SAILOR, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, 0, OBJECTTYPE_SCRIPT, 0, OlivinePortSailorAfterHOFScript, EVENT_OLIVINE_PORT_SPRITES_AFTER_HALL_OF_FAME
 	object_event  4,  7, SPRITE_SCHOOLBOY, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, 0, OBJECTTYPE_SCRIPT, 0, OlivinePortYoungsterScript, EVENT_OLIVINE_PORT_SPRITES_AFTER_HALL_OF_FAME
 	object_event 11,  7, SPRITE_ACE_TRAINER_F, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, 0, OBJECTTYPE_SCRIPT, 0, OlivinePortCooltrainerFScript, EVENT_OLIVINE_PORT_SPRITES_AFTER_HALL_OF_FAME
-	keyitemball_event 16, 14, GO_GOGGLES, EVENT_OLIVINE_PORT_GO_GOGGLES
+	object_event 16, 13, SPRITE_FLOATING_BALL, SPRITEMOVEDATA_POKEMON, 0, 0, -1, PAL_NPC_ENV_GREEN, OBJECTTYPE_ITEMBALL, PLAYEREVENT_KEYITEMBALL, GO_GOGGLES, EVENT_OLIVINE_PORT_GO_GOGGLES
 
 	object_const_def
 	const OLIVINEPORT_SAILOR1
 	const OLIVINEPORT_SAILOR3
 
-OlivinePortTrigger1:
+OlivinePortLeaveShipScene:
 	sdefer OlivinePortLeaveShipScript
-OlivinePortTrigger0:
+OlivinePortAskEnterShipScene:
 	end
 
 OlivinePortLeaveShipScript:
 	applyonemovement PLAYER, step_up
 	appear OLIVINEPORT_SAILOR1
-	setscene $0
+	setscene SCENE_OLIVINEPORT_ASK_ENTER_SHIP
 	setevent EVENT_TEMPORARY_UNTIL_MAP_RELOAD_1
 	blackoutmod OLIVINE_CITY
 	end
@@ -77,12 +77,16 @@ OlivinePortSailorAtGangwayScript:
 .FirstTime:
 	clearevent EVENT_FAST_SHIP_DESTINATION_OLIVINE
 	appear OLIVINEPORT_SAILOR1
-	setmapscene FAST_SHIP_1F, $1
+	setmapscene FAST_SHIP_1F, SCENE_FASTSHIP1F_ENTER_SHIP
 	warp FAST_SHIP_1F, 25, 1
 	end
 
 OlivinePortAlreadyRodeScript:
-	jumpopenedtext OlivinePortCantBoardText
+	jumpthisopenedtext
+
+	text "Sorry. You can't"
+	line "board now."
+	done
 
 OlivinePortWalkUpToShipScript:
 	turnobject OLIVINEPORT_SAILOR3, RIGHT
@@ -259,10 +263,6 @@ OlivinePortSailorGetOnBoardText:
 	cont "on board."
 	done
 
-OlivinePortCantBoardText:
-	text "Sorry. You can't"
-	line "board now."
-	done
 
 OlivinePortAskBoardText:
 	text "Welcome to Fast"

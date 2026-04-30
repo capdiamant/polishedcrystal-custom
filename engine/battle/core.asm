@@ -226,15 +226,10 @@ BattleTurn:
 	ret
 
 ResetAbilityIgnorance:
-; Resets the "ignoring foe's ability" flag.
+; Resets the "ignoring foe's ability" flag for both sides.
 ; When move sequence order is replicated, this dedicated routine will no longer
 ; be necessary, because it will be an inherent part of the move sequence.
-	ldh a, [hBattleTurn]
-	and a
-	ld a, ~MOVESTATE_IGNOREABIL
-	jr z, .got_movestate
-	swap a
-.got_movestate
+	ld a, ~(MOVESTATE_IGNOREABIL | MOVESTATE_OPP_IGNOREABIL)
 	push hl
 	ld hl, wMoveState
 	and [hl]
@@ -271,7 +266,7 @@ HandleBerserkGene:
 	call SwitchTurn
 
 .do_it
-	predef GetUserItemAfterUnnerve
+	farcall GetUserItemAfterUnnerve
 	ld a, b
 	cp HELD_BERSERK_GENE
 	ret nz
@@ -389,7 +384,7 @@ GetSpeed::
 	farcall ApplySpeedAbilities
 
 	; Apply item effects
-	predef GetUserItemAfterUnnerve
+	farcall GetUserItemAfterUnnerve
 	ld a, b
 	cp HELD_QUICK_POWDER
 	jr z, .quick_powder
@@ -1235,6 +1230,20 @@ endr
 	call NewEnemyMonStatus
 
 .volatile_done
+	; Starting with 8gen, ability ignorance no longer affects the move user,
+	; but does affect other Pokémon on the move user's side. This includes
+	; Pokémon switched into the same slot during move execution.
+	; Example: Mold Breaker U-turn that pivots into a Levitate mon should
+	; take Spikes damage. Ignoring abilities entirely, which is how 7gen
+	; behaved, causes problems if we were to add Sunsteel Strike/etc.
+	; ResetAbilityIgnorance will reset both sides' ignorance state.
+	ld a, [wMoveState]
+	ld d, a
+	and MOVESTATE_IGNOREABIL
+	swap a
+	or d
+	ld [wMoveState], a
+
 	; Switch active mon
 	ldh a, [hBattleTurn]
 	and a
@@ -1843,9 +1852,9 @@ DoSubtractHPFromUser:
 _SubtractHPFromPlayer:
 	ld hl, wBattleMonMaxHP
 	ld a, [hli]
-	ld [wBuffer2], a
+	ld [wHPBuffer1 + 1], a
 	ld a, [hl]
-	ld [wBuffer1], a
+	ld [wHPBuffer1], a
 	ld hl, wBattleMonHP
 	ldh a, [hBattleTurn]
 	push af
@@ -1858,9 +1867,9 @@ _SubtractHPFromPlayer:
 _SubtractHPFromEnemy:
 	ld hl, wEnemyMonMaxHP
 	ld a, [hli]
-	ld [wBuffer2], a
+	ld [wHPBuffer1 + 1], a
 	ld a, [hl]
-	ld [wBuffer1], a
+	ld [wHPBuffer1], a
 	ld hl, wEnemyMonHP
 	ldh a, [hBattleTurn]
 	push af
@@ -1879,7 +1888,7 @@ CheckEnigmaBerry:
 	ret c
 
 	; Are we actually holding Enigma Berry?
-	predef GetUserItemAfterUnnerve
+	farcall GetUserItemAfterUnnerve
 	ld a, b
 	cp HELD_ENIGMA_BERRY
 	ret nz
@@ -1939,28 +1948,28 @@ _SubtractHP:
 .do_subtract
 	inc hl
 	ld a, [hl]
-	ld [wBuffer3], a
+	ld [wHPBuffer2], a
 	sub c
 	ld [hld], a
-	ld [wBuffer5], a
+	ld [wHPBuffer3], a
 	ld a, [hl]
-	ld [wBuffer4], a
+	ld [wHPBuffer2 + 1], a
 	sbc b
 	ld [hl], a
-	ld [wBuffer6], a
+	ld [wHPBuffer3 + 1], a
 	ret nc
 
-	ld a, [wBuffer3]
+	ld a, [wHPBuffer2]
 	ld [wCurDamage+1], a
 	ld c, a
-	ld a, [wBuffer4]
+	ld a, [wHPBuffer2 + 1]
 	ld [wCurDamage], a
 	ld b, a
 	xor a
 	ld [hli], a
 	ld [hld], a
-	ld [wBuffer5], a
-	ld [wBuffer6], a
+	ld [wHPBuffer3], a
+	ld [wHPBuffer3 + 1], a
 	ret
 
 RestoreHP:
@@ -1971,36 +1980,36 @@ RestoreHP:
 	ld hl, wEnemyMonMaxHP
 .ok
 	ld a, [hli]
-	ld [wBuffer2], a
+	ld [wHPBuffer1 + 1], a
 	ld a, [hld]
-	ld [wBuffer1], a
+	ld [wHPBuffer1], a
 	dec hl
 	ld a, [hl]
-	ld [wBuffer3], a
+	ld [wHPBuffer2], a
 	add c
 	ld [hld], a
-	ld [wBuffer5], a
+	ld [wHPBuffer3], a
 	ld a, [hl]
-	ld [wBuffer4], a
+	ld [wHPBuffer2 + 1], a
 	adc b
 	ld [hli], a
-	ld [wBuffer6], a
+	ld [wHPBuffer3 + 1], a
 
-	ld a, [wBuffer1]
+	ld a, [wHPBuffer1]
 	ld c, a
 	ld a, [hld]
 	sub c
-	ld a, [wBuffer2]
+	ld a, [wHPBuffer1 + 1]
 	ld b, a
 	ld a, [hl]
 	sbc b
 	jr c, UpdateHPBarBattleHuds
 	ld a, b
 	ld [hli], a
-	ld [wBuffer6], a
+	ld [wHPBuffer3 + 1], a
 	ld a, c
 	ld [hl], a
-	ld [wBuffer5], a
+	ld [wHPBuffer3], a
 	; fallthrough
 
 UpdateHPBarBattleHuds:
@@ -2187,6 +2196,20 @@ FaintUserPokemon:
 .text
 	call StdBattleTextbox
 	call LoadTileMapToTempTileMap
+	call SuppressUserAbilities
+
+	; We can't use ResetAbilityIgnorance here, because it resets both sides'
+	; flags.
+	ld hl, wMoveState
+	ldh a, [hBattleTurn]
+	and a
+	ld a, ~MOVESTATE_IGNOREABIL
+	jr z, .got_mb_side
+	swap a
+.got_mb_side
+	and [hl]
+	ld [hl], a
+	ret
 
 SuppressUserAbilities:
 	ld a, BATTLE_VARS_ABILITY
@@ -2507,7 +2530,7 @@ PlayerMonFaintHappinessMod:
 .got_param
 	ld a, [wCurBattleMon]
 	ld [wCurPartyMon], a
-	predef_jump ChangeHappiness
+	farjp ChangeHappiness
 
 AskUseNextPokemon:
 	call EmptyBattleTextbox
@@ -2951,7 +2974,7 @@ Function_SetEnemyPkmnAndSendOutAnimation:
 	call GetBaseData
 	ld a, OTPARTYMON
 	ld [wMonType], a
-	predef CopyPkmnToTempMon
+	farcall CopyPkmnToTempMon
 	call GetMonFrontpic
 
 	xor a
@@ -2994,7 +3017,7 @@ BattleAnimateFrontpic:
 .no_substitute
 	hlcoord 12, 0
 	lb de, $0, ANIM_MON_SLOW
-	predef_jump AnimateFrontpic ; also plays cry
+	farjp AnimateFrontpic ; also plays cry
 
 .cry_no_anim
 	ld a, $f
@@ -3340,7 +3363,7 @@ SpikesDamage_GotAbility:
 	jr nz, .end_hazards
 
 	push bc
-	predef GetUserItemAfterUnnerve
+	farcall GetUserItemAfterUnnerve
 	ld a, b
 	cp HELD_HEAVY_BOOTS
 	pop bc
@@ -3377,7 +3400,7 @@ SpikesDamage_GotAbility:
 	ld hl, GetQuarterMaxHP
 .got_hp
 	call _hl_
-	predef SubtractHPFromUser
+	call SubtractHPFromUser
 	call UpdateUserInParty
 
 	ld hl, BattleText_UserHurtBySpikes
@@ -3547,7 +3570,7 @@ QuarterPinchOrGluttony::
 HandleStatBoostBerry:
 	call QuarterPinchOrGluttony
 	ret nz
-	predef GetUserItemAfterUnnerve
+	farcall GetUserItemAfterUnnerve
 	call _HeldStatBoostBerry
 	ret nz
 	farjp ConsumeUserItem
@@ -3658,7 +3681,7 @@ HandleHPHealingItem:
 	jr z, .ok
 	ret nc
 .ok
-	predef GetUserItemAfterUnnerve
+	farcall GetUserItemAfterUnnerve
 	ld a, [hl]
 	cp FIGY_BERRY
 	jr nz, .figy_ok
@@ -3666,7 +3689,7 @@ HandleHPHealingItem:
 	call QuarterPinchOrGluttony
 	ret nz
 .figy_ok
-	predef GetUserItemAfterUnnerve
+	farcall GetUserItemAfterUnnerve
 	call _HeldHPHealingItem
 	ret nz
 UseBattleItem:
@@ -3755,7 +3778,7 @@ _ItemRecoveryAnim::
 	ld [wFXAnimIDLo], a
 	ld a, HIGH(ANIM_HELD_ITEM_TRIGGER)
 	ld [wFXAnimIDHi], a
-	predef PlayBattleAnim
+	farcall PlayBattleAnim
 	xor a
 	ld [wBattleAnimParam], a
 	jmp PopBCDEHL
@@ -3778,7 +3801,7 @@ StealHeldStatusHealingItem:
 UseOpponentHeldStatusHealingItem:
 	call StackCallOpponentTurn
 UseHeldStatusHealingItem:
-	predef GetUserItemAfterUnnerve
+	farcall GetUserItemAfterUnnerve
 	call _HeldStatusHealingItem
 	ret z
 	jmp UseBattleItem
@@ -3843,7 +3866,7 @@ StealConfusionHealingItem:
 UseOpponentConfusionHealingItem:
 	call StackCallOpponentTurn
 UseConfusionHealingItem:
-	predef GetUserItemAfterUnnerve
+	farcall GetUserItemAfterUnnerve
 	call _HeldConfusionHealingItem
 	ret z
 	jmp UseBattleItem
@@ -3854,7 +3877,8 @@ _HeldConfusionHealingItem:
 	jr nz, .ret_z
 	call DoHeldConfusionHealingItem
 	ret z
-	farcall ShowPotentialAbilityActivation
+	ld a, CUD_CHEW
+	farcall ShowPotentialSpecificAbilityActivation
 	call CurItemRecoveryAnim
 	or 1
 	ret
@@ -3916,7 +3940,7 @@ DrawPlayerHUD:
 	hlcoord 11, 9
 	xor a ; PARTYMON
 	ld [wMonType], a
-	predef DrawPlayerHP
+	farcall DrawPlayerHP
 
 	; Exp bar
 	push de
@@ -4015,7 +4039,7 @@ endr
 	ld bc, wBattleMonShiny
 	farcall CheckShininess
 	jr nc, .not_own_shiny
-	ld a, '<STAR>'
+	ld a, '<SHINY>'
 	hlcoord 19, 8
 	ld [hl], a
 
@@ -4091,7 +4115,7 @@ endr
 	ld bc, wEnemyMonShiny
 	farcall CheckShininess
 	jr nc, .not_shiny
-	ld a, '<STAR>'
+	ld a, '<SHINY>'
 	hlcoord 9, 1
 	ld [hl], a
 
@@ -4190,7 +4214,7 @@ endr
 	jmp FinishBattleAnim
 
 BattleAnimateHPBar:
-	predef AnimateHPBar
+	farcall AnimateHPBar
 	ld a, [wWhichHPBar]
 	and a
 	ld hl, wEnemyHPPal
@@ -4602,7 +4626,7 @@ AI_UserCanSwitch:
 
 UserCanSwitch:
 ; Returns z if the user can switch, with the message in hl if they can't.
-	predef GetUserItemAfterUnnerve
+	farcall GetUserItemAfterUnnerve
 	ld a, b
 	cp HELD_SHED_SHELL
 	ret z
@@ -5016,8 +5040,8 @@ MoveSelectionScreen:
 	hlcoord 6, 17 - NUM_MOVES - 4
 .got_start_coord
 	ld a, SCREEN_WIDTH
-	ld [wBuffer1], a
-	predef ListMoves
+	ld [wListMovesLineSpacing], a
+	farcall ListMoves
 
 	ld a, [wMoveSelectionMenuType]
 	dec a
@@ -5528,9 +5552,18 @@ MoveInfoBox:
 	ld hl, vTiles2 tile $59
 	lb bc, BANK(CategoryIconGFX), 2
 	call Request2bpp
+	ld a, [wPlayerMoveStruct + MOVE_ANIM]
+	cp HIDDEN_POWER
+	jr nz, .not_hidden_power
+	ld hl, wBattleMonDVs
+	farcall GetHiddenPowerType
+	jr .got_type
+
+.not_hidden_power
+	ld a, [wPlayerMoveStruct + MOVE_TYPE]
+.got_type
 	ld hl, TypeIconGFX
 	ld bc, 4 * TILE_1BPP_SIZE
-	ld a, [wPlayerMoveStruct + MOVE_TYPE]
 	rst AddNTimes
 	ld d, h
 	ld e, l
@@ -5706,7 +5739,7 @@ CheckUsableMove:
 
 .GetItemHeldEffect:
 	push bc
-	predef GetUserItemAfterUnnerve
+	farcall GetUserItemAfterUnnerve
 	ld a, b
 	pop bc
 	ret
@@ -5938,7 +5971,7 @@ LoadEnemyWildmon:
 	; set [wCurForm] before TryAddMonToParty calls GetBaseData
 	call GenerateWildForm
 
-	predef TryAddMonToParty
+	farcall TryAddMonToParty
 
 	call CheckValidMagikarpLength
 	jr c, LoadEnemyWildmon
@@ -6063,7 +6096,7 @@ endc
 	; Fill wild PP
 	ld hl, wOTPartyMon1Moves
 	ld de, wOTPartyMon1PP
-	predef_jump FillPP
+	farjp FillPP
 
 ApplyLegendaryDVs:
 	push de
@@ -6430,7 +6463,7 @@ PlayBattleAnimDE:
 	ld a, d
 	ld [wFXAnimIDHi], a
 	call ApplyTilemapInVBlank
-	predef_jump PlayBattleAnim
+	farjp PlayBattleAnim
 
 FinishBattleAnim:
 	push hl
@@ -6638,7 +6671,7 @@ GiveExperiencePoints:
 .not_max_exp
 	xor a ; PARTYMON
 	ld [wMonType], a
-	predef CopyPkmnToTempMon
+	farcall CopyPkmnToTempMon
 	farcall CalcLevel
 	pop bc
 	ld hl, MON_LEVEL
@@ -6724,7 +6757,7 @@ GiveExperiencePoints:
 .skip_animation2
 	xor a ; PARTYMON
 	ld [wMonType], a
-	predef CopyPkmnToTempMon
+	farcall CopyPkmnToTempMon
 	farcall PrintStatDifferences
 	call SafeLoadTempTileMapToTileMap
 	call GetMemCGBLayout
@@ -6743,7 +6776,7 @@ GiveExperiencePoints:
 	ld a, b
 	ld [wCurPartyLevel], a
 	push bc
-	predef LearnLevelMoves
+	farcall LearnLevelMoves
 	pop bc
 	ld a, b
 	cp c
@@ -6768,7 +6801,7 @@ GiveExperiencePoints:
 	ld a, [wCurPartyMon]
 	ld c, a
 	ld b, SET_FLAG
-	predef FlagPredef
+	farcall SmallFlagAction
 
 .evolve_logic_done
 	pop af
@@ -6793,7 +6826,7 @@ GiveExperiencePoints:
 	ld c, a
 	ld b, CHECK_FLAG
 	ld d, $0
-	predef FlagPredef
+	farcall SmallFlagAction
 	ld a, c
 	and a
 	ret
@@ -7164,7 +7197,7 @@ AnimateExpBar:
 	push af
 	xor a ; PARTYMON
 	ld [wMonType], a
-	predef CopyPkmnToTempMon
+	farcall CopyPkmnToTempMon
 	ld a, [wTempMonLevel]
 	ld b, a
 	ld e, a
@@ -7418,7 +7451,7 @@ _GetNewBaseExp:
 	ld a, h
 	cp b
 	jr nz, .is_evo
-	predef GetEvosAttacksPointer
+	farcall GetEvosAttacksPointer
 	ld a, BANK(EvosAttacks)
 	call GetFarByte
 	inc a
@@ -7432,7 +7465,7 @@ _GetNewBaseExp:
 	push bc
 	ld b, h
 	ld c, l
-	predef GetEvosAttacksPointer
+	farcall GetEvosAttacksPointer
 	pop bc
 .evos_loop
 	ld a, BANK(EvosAttacks)
@@ -7847,7 +7880,7 @@ DropPlayerSub:
 	ld a, [wBattleMonForm]
 	ld [wCurForm], a
 	ld de, vTiles2 tile $31
-	predef GetBackpic
+	farcall GetBackpic
 	pop af
 	ld [wCurForm], a
 	pop af
@@ -7900,7 +7933,7 @@ GetFrontpicOrGhostpic:
 
 .not_ghost_battle
 	ld de, vTiles2
-	predef_jump FrontpicPredef
+	farjp PrepareAnimatedFrontpic
 
 GetFrontpic_DoAnim:
 	ldh a, [hBattleTurn]
@@ -7928,7 +7961,7 @@ StartBattle:
 	call ExitBattle
 	farcall LoadWeatherGraphics
 	farcall LoadWeatherPal
-	xor a
+	xor a ; TRAINERPAL_NONE
 	ld [wTrainerPal], a
 	pop af
 	ld [wTimeOfDayPal], a
@@ -7968,7 +8001,7 @@ BattleIntro:
 	ld hl, SilphScopeRevealText
 	call StdBattleTextbox
 	ld de, vTiles0
-	predef GetFrontpic
+	farcall GetFrontpic
 	ld de, ANIM_GHOST_TRANSFORM
 	call PlayBattleAnimDE
 	ld hl, WildPokemonAppearedText
@@ -8059,7 +8092,7 @@ InitEnemy:
 	ld [wEnemyItemState], a
 	hlcoord 12, 0
 	lb bc, 7, 7
-	predef PlaceGraphic
+	farcall PlaceGraphic
 	ld a, -1
 	ld [wCurOTMon], a
 	ld a, TRAINER_BATTLE
@@ -8079,7 +8112,7 @@ InitEnemy:
 	or [hl]
 	jr z, .skipfaintedmon
 	ld c, HAPPINESS_GYMBATTLE
-	predef ChangeHappiness
+	farcall ChangeHappiness
 .skipfaintedmon
 	pop bc
 	dec b
@@ -8102,7 +8135,7 @@ InitEnemy:
 	ldh [hGraphicStartTile], a
 	hlcoord 12, 0
 	lb bc, 7, 7
-	predef_jump PlaceGraphic
+	farjp PlaceGraphic
 
 ExitBattle:
 	call PostBattleTasks
@@ -8687,7 +8720,7 @@ InitBattleDisplay:
 	ldh [hGraphicStartTile], a
 	hlcoord 2, 6
 	lb bc, 6, 6
-	predef PlaceGraphic
+	farcall PlaceGraphic
 	call ApplyTilemapInVBlank
 	call HideSprites
 	ld a, CGB_BATTLE_COLORS
@@ -8723,25 +8756,13 @@ InitBattleDisplay:
 
 GetTrainerBackpic:
 ; Load the player character's backpic (6x6) into VRAM starting from vTiles2 tile $31.
-
-; Special exception for Lyra.
-	ld hl, LyraBackpic
 	ld a, [wBattleType]
 	cp BATTLETYPE_TUTORIAL
-	jr z, .Decompress
+	jr z, .Lyra
+	farjp GetPlayerBackpic
 
-; What gender are we?
-	ld a, [wPlayerGender]
-	ld hl, ChrisBackpic
-	and a ; PLAYER_MALE
-	jr z, .Decompress
-	ld hl, KrisBackpic
-	dec a ; PLAYER_FEMALE
-	jr z, .Decompress
-	; PLAYER_ENBY
-	ld hl, CrysBackpic
-
-.Decompress:
+.Lyra:
+	ld hl, LyraBackpic
 	ld de, vTiles2 tile $31
 	lb bc, BANK("Trainer Backpics"), 6 * 6
 	jmp DecompressRequest2bpp
@@ -8764,7 +8785,7 @@ CopyBackpic:
 	ldh [hGraphicStartTile], a
 	hlcoord 2, 6
 	lb bc, 6, 6
-	predef_jump PlaceGraphic
+	farjp PlaceGraphic
 
 .LoadTrainerBackpicAsOAM:
 	ld hl, wShadowOAM
@@ -8898,19 +8919,34 @@ AutomaticBattleWeather:
 	cp GROUP_SNOWTOP_MOUNTAIN_INSIDE ; aka GROUP_RUGGED_ROAD_SOUTH
 	jr nz, .not_rugged_road_or_snowtop_mountain
 	ld a, [wMapNumber]
-	; Automatic hail on Snowtop Mountain
-	cp MAP_SNOWTOP_MOUNTAIN_INSIDE
-	lb de, WEATHER_HAIL, HAIL
-	ld hl, HailStartedText
-	jr z, .got_weather
 	; Automatic sandstorm on Rugged Road
 	cp MAP_RUGGED_ROAD_SOUTH
 	lb de, WEATHER_SANDSTORM, SANDSTORM
 	ld hl, SandstormBrewedText
 	jr z, .got_weather
+	; Automatic hail on Snowtop Mountain
+	cp MAP_SNOWTOP_MOUNTAIN_INSIDE
+	jr .maybe_hail
 .not_rugged_road_or_snowtop_mountain
-	; Automatic rain on overcast maps
+	; Automatic hail on Mt. Silver peak
+	ld a, [wMapGroup]
+	cp GROUP_SILVER_CAVE_ROOM_3
+	jr nz, .not_mt_silver_peak
+	ld a, [wMapNumber]
+	cp MAP_SILVER_CAVE_ROOM_3
+.maybe_hail
+	lb de, WEATHER_HAIL, HAIL
+	ld hl, HailStartedText
+	jr z, .got_weather
+.not_mt_silver_peak
+	; Automatic rain when raining
+	; first check if its overcast conditions
 	farcall GetOvercastIndex
+	and a
+	ret z
+	; don't rain if we aren't actually raining
+	ld a, [wOvercastCurIntensity]
+	assert OVERCAST_INTENSITY_OVERCAST == 0
 	and a
 	ret z
 	lb de, WEATHER_RAIN, RAIN_DANCE

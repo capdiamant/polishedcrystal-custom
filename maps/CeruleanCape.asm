@@ -1,5 +1,7 @@
 CeruleanCape_MapScriptHeader:
 	def_scene_scripts
+	scene_const SCENE_CERULEANCAPE_NOOP
+	scene_const SCENE_CERULEANCAPE_MISTYS_DATE
 
 	def_callbacks
 	callback MAPCALLBACK_NEWMAP, CeruleanCapeFlyPoint
@@ -9,9 +11,9 @@ CeruleanCape_MapScriptHeader:
 	warp_event 38, 29, DIM_CAVE_2F, 1
 
 	def_coord_events
-	coord_event  4,  6, 1, CeruleanCapeDateInterruptedTrigger1
-	coord_event  4,  7, 1, CeruleanCapeDateInterruptedTrigger2
-	coord_event  9, 12, 1, CeruleanCapeDateInterruptedTrigger3
+	coord_event  4,  6, SCENE_CERULEANCAPE_MISTYS_DATE, CeruleanCapeDateInterruptedTrigger1
+	coord_event  4,  7, SCENE_CERULEANCAPE_MISTYS_DATE, CeruleanCapeDateInterruptedTrigger2
+	coord_event  9, 12, SCENE_CERULEANCAPE_MISTYS_DATE, CeruleanCapeDateInterruptedTrigger3
 
 	def_bg_events
 	bg_event  7,  5, BGEVENT_JUMPTEXT, BillsHouseSignText
@@ -22,7 +24,7 @@ CeruleanCape_MapScriptHeader:
 	object_event  8,  9, SPRITE_MISTY, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, 0, OBJECTTYPE_SCRIPT, 0, ObjectEvent, EVENT_CERULEAN_CAPE_BOYFRIEND
 	object_event  8, 10, SPRITE_COOL_DUDE, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, 0, OBJECTTYPE_SCRIPT, 0, ObjectEvent, EVENT_CERULEAN_CAPE_BOYFRIEND
 	object_event 25,  8, SPRITE_SWIMMER_GUY, SPRITEMOVEDATA_SPINCLOCKWISE, 0, 0, -1, 0, OBJECTTYPE_GENERICTRAINER, 4, GenericTrainerSwimmermRomeo, -1
-	object_event 41, 16, SPRITE_SWIMMER_GUY, SPRITEMOVEDATA_SPINRANDOM_FAST, 0, 0, -1, 0, OBJECTTYPE_GENERICTRAINER, 4, GenericTrainerSwimmermMalcolm, -1
+	object_event 41, 16, SPRITE_SWIMMER_GUY, SPRITEMOVEDATA_SPINRANDOM_FAST, 0, 0, -1, PAL_NPC_DARK_RED, OBJECTTYPE_TRAINER, 4, TrainerSwimmermMalcolm, -1
 	object_event 25, 27, SPRITE_SWIMMER_GUY, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, 0, OBJECTTYPE_GENERICTRAINER, 4, GenericTrainerSwimmermArmand, -1
 	object_event 19, 12, SPRITE_BEAUTY, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, 0, OBJECTTYPE_GENERICTRAINER, 2, GenericTrainerBeautyBridget, -1
 	object_event  1, 21, SPRITE_BEAUTY, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, 0, OBJECTTYPE_GENERICTRAINER, 3, GenericTrainerBeautyVeronica, -1
@@ -35,7 +37,7 @@ CeruleanCape_MapScriptHeader:
 	object_event -2, 8, SPRITE_ACE_TRAINER_M, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, 0, OBJECTTYPE_COMMAND, jumptextfaceplayer, CooltrainermKevinAfterBattleText, EVENT_ROUTE_25_COOLTRAINER_M_AFTER
 	object_event 21, 19, SPRITE_SAILBOAT, SPRITEMOVEDATA_SAILBOAT_TOP, 0, 0, -1, 0, OBJECTTYPE_COMMAND, jumptext, CeruleanCapeSailboatText, -1
 	object_event 21, 19, SPRITE_SAILBOAT, SPRITEMOVEDATA_SAILBOAT_BOTTOM, 0, 0, -1, 0, OBJECTTYPE_COMMAND, jumptext, CeruleanCapeSailboatText, -1
-	itemball_event 31, 12, SHELL_BELL, 1, EVENT_CERULEAN_CAPE_SHELL_BELL
+	object_event 29, 11, SPRITE_FLOATING_BALL, SPRITEMOVEDATA_POKEMON, 0, 0, -1, 0, OBJECTTYPE_ITEMBALL, PLAYEREVENT_ITEMBALL, SHELL_BELL, 1, EVENT_CERULEAN_CAPE_SHELL_BELL
 
 	object_const_def
 	const CERULEANCAPE_MISTY
@@ -80,7 +82,7 @@ CeruleanCapeDateFinishScript:
 	applymovement CERULEANCAPE_MISTY, Route25MistyLeavesMovement
 	disappear CERULEANCAPE_MISTY
 	clearevent EVENT_TRAINERS_IN_CERULEAN_GYM
-	setscene $0
+	setscene SCENE_CERULEANCAPE_NOOP
 	special RestartMapMusic
 	end
 
@@ -103,7 +105,7 @@ CeruleanCapeDateInterruptedTrigger3:
 	applymovement CERULEANCAPE_MISTY, .LeaveMovement
 	disappear CERULEANCAPE_MISTY
 	clearevent EVENT_TRAINERS_IN_CERULEAN_GYM
-	setscene $0
+	setscene SCENE_CERULEANCAPE_NOOP
 	special RestartMapMusic
 	end
 
@@ -150,8 +152,12 @@ GenericTrainerSwimmermRomeo:
 	text "Oh! That's it?"
 	done
 
-GenericTrainerSwimmermMalcolm:
-	generictrainer SWIMMERM, MALCOLM, EVENT_BEAT_SWIMMERM_MALCOLM, .SeenText, .BeatenText
+TrainerSwimmermMalcolm:
+	trainer SWIMMERM, MALCOLM, EVENT_BEAT_SWIMMERM_MALCOLM, .SeenText, .BeatenText, 0, .Script, TRAINERPAL_DARK_SWIMMERM
+
+.Script:
+	endifjustbattled
+	jumpthistextfaceplayer
 
 	text "Don't tell me,"
 	line "you visit lots of"

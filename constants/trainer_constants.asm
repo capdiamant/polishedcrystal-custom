@@ -1,17 +1,9 @@
-DEF __trainer_pal__ = 0
-
-MACRO trainerpal
-	DEF TRAINERPAL_\1 = __trainer_pal__
-	DEF __trainer_pal__ += 1
-ENDM
-
 DEF __trainer_class__ = 0
 
 MACRO trainerclass
 	DEF \1 EQU __trainer_class__
 	DEF __trainer_class__ += 1
 	const_def 1
-	trainerpal \1
 ENDM
 
 ; trainer class ids
@@ -26,7 +18,7 @@ ENDM
 ; - BTTrainerClassSprites (see data/trainers/sprites.asm)
 ; - BTTrainerClassGenders (see data/trainers/genders.asm)
 ; trainer constants are indexes for the sub-tables of TrainerGroups (see data/trainers/parties.asm)
-	trainerclass TRAINER_NONE ; 0
+	trainerclass TRAINER_NONE
 	const PHONECONTACT_MOM
 	const PHONECONTACT_BIKESHOP
 	const PHONECONTACT_BILL
@@ -35,66 +27,69 @@ ENDM
 	const PHONECONTACT_BUENA
 DEF NUM_NONTRAINER_PHONECONTACTS EQU const_value - 1
 
-DEF KRIS EQU __trainer_class__
-	trainerclass CARRIE ; 1
-
 DEF CHRIS EQU __trainer_class__
-	trainerclass CAL ; 2
+	trainerclass CAL
+
+DEF KRIS EQU __trainer_class__
+	trainerclass CARRIE
 
 DEF CRYS EQU __trainer_class__
-	trainerclass JACKY ; 3
+	trainerclass JACKY
 
-	trainerclass FALKNER ; 4
+DEF BETA EQU __trainer_class__
+	trainerclass EUNA
 
-	trainerclass BUGSY ; 5
+	trainerclass FALKNER
 
-	trainerclass WHITNEY ; 6
+	trainerclass BUGSY
 
-	trainerclass MORTY ; 7
+	trainerclass WHITNEY
 
-	trainerclass CHUCK ; 8
+	trainerclass MORTY
 
-	trainerclass JASMINE ; 9
+	trainerclass CHUCK
 
-	trainerclass PRYCE ; a
+	trainerclass JASMINE
 
-	trainerclass CLAIR ; b
+	trainerclass PRYCE
 
-	trainerclass WILL ; c
+	trainerclass CLAIR
 
-	trainerclass KOGA ; d
+	trainerclass WILL
 
-	trainerclass BRUNO ; e
+	trainerclass KOGA
 
-	trainerclass KAREN ; f
+	trainerclass BRUNO
 
-	trainerclass CHAMPION ; 10
+	trainerclass KAREN
+
+	trainerclass CHAMPION
 	const LANCE
 	const LANCE2
 
-	trainerclass BROCK ; 11
+	trainerclass BROCK
 
-	trainerclass MISTY ; 12
+	trainerclass MISTY
 
-	trainerclass LT_SURGE ; 13
+	trainerclass LT_SURGE
 
-	trainerclass ERIKA ; 14
+	trainerclass ERIKA
 
-	trainerclass JANINE ; 15
+	trainerclass JANINE
 
-	trainerclass SABRINA ; 16
+	trainerclass SABRINA
 
-	trainerclass BLAINE ; 17
+	trainerclass BLAINE
 
-	trainerclass BLUE ; 18
+	trainerclass BLUE
 
-	trainerclass RED ; 19
+	trainerclass RED
 
-	trainerclass LEAF ; 1a
+	trainerclass LEAF
 
-	trainerclass RIVAL0 ; 1b
+	trainerclass RIVAL0
 
-	trainerclass RIVAL1 ; 1c
+	trainerclass RIVAL1
 	const RIVAL1_4
 	const RIVAL1_5
 	const RIVAL1_6
@@ -108,9 +103,9 @@ DEF CRYS EQU __trainer_class__
 	const RIVAL1_14
 	const RIVAL1_15
 
-	trainerclass RIVAL2 ; 1d
+	trainerclass RIVAL2
 
-	trainerclass LYRA1 ; 1e
+	trainerclass LYRA1
 	const LYRA1_1
 	const LYRA1_2
 	const LYRA1_3
@@ -124,9 +119,9 @@ DEF CRYS EQU __trainer_class__
 	const LYRA1_11
 	const LYRA1_12
 
-	trainerclass LYRA2 ; 1f
+	trainerclass LYRA2
 
-	trainerclass YOUNGSTER ; 20
+	trainerclass YOUNGSTER
 	const JOEY1
 	const JOEY2
 	const JOEY3
@@ -147,7 +142,7 @@ DEF CRYS EQU __trainer_class__
 	const TYLER
 	const ARDEN
 
-	trainerclass BUG_CATCHER ; 21
+	trainerclass BUG_CATCHER
 	const WADE1
 	const WADE2
 	const WADE3
@@ -166,7 +161,7 @@ DEF CRYS EQU __trainer_class__
 	const WAYNE
 	const OSCAR
 
-	trainerclass CAMPER ; 22
+	trainerclass CAMPER
 	const TODD1
 	const TODD2
 	const TODD3
@@ -183,7 +178,7 @@ DEF CRYS EQU __trainer_class__
 	const JERRY
 	const SPENCER
 	const QUENTIN
-	const GRANT
+	const GRANT ; custom pal
 	const CRAIG
 	const FELIX
 	const TANNER
@@ -191,7 +186,7 @@ DEF CRYS EQU __trainer_class__
 	const PEDRO
 	const AMOS
 
-	trainerclass PICNICKER ; 23
+	trainerclass PICNICKER
 	const LIZ1
 	const LIZ2
 	const LIZ3
@@ -224,7 +219,7 @@ DEF CRYS EQU __trainer_class__
 	const ADRIAN
 	const ZANE
 
-	trainerclass TWINS ; 24
+	trainerclass TWINS
 	const AMYANDMIMI1
 	const AMYANDMIMI2
 	const ANNANDANNE1
@@ -240,7 +235,7 @@ DEF CRYS EQU __trainer_class__
 	const KAYANDTIA1
 	const KAYANDTIA2
 
-	trainerclass FISHER ; 25
+	trainerclass FISHER
 	const RALPH1
 	const RALPH2
 	const RALPH3
@@ -277,7 +272,7 @@ DEF CRYS EQU __trainer_class__
 	const HALL
 	const DALLAS
 
-	trainerclass BIRD_KEEPER ; 26
+	trainerclass BIRD_KEEPER
 	const VANCE1
 	const VANCE2
 	const VANCE3
@@ -297,7 +292,7 @@ DEF CRYS EQU __trainer_class__
 	const PERRY
 	const BRET
 	const MICK
-	const POWELL
+	const POWELL ; custom pal
 	const BIRD_KEEPER_TONY
 	const JULIAN
 	const BIRD_KEEPER_JUSTIN
@@ -310,7 +305,7 @@ DEF CRYS EQU __trainer_class__
 	const BRYAN
 	const TRENT
 
-	trainerclass HIKER ; 27
+	trainerclass HIKER
 	const ANTHONY1
 	const ANTHONY2
 	const ANTHONY3
@@ -348,11 +343,11 @@ DEF CRYS EQU __trainer_class__
 	const DERRICK
 	const FLOYD
 
-	trainerclass GRUNTM ; 28
+	trainerclass GRUNTM
 
-	trainerclass GRUNTF ; 29
+	trainerclass GRUNTF
 
-	trainerclass POKEFANM ; 2a
+	trainerclass POKEFANM
 	const DEREK1
 	const DEREK2
 	const DEREK3
@@ -368,37 +363,37 @@ DEF CRYS EQU __trainer_class__
 	const REX
 	const ALLAN
 
-	trainerclass POKEFANF ; 2b
+	trainerclass POKEFANF
 	const BEVERLY1
 	const BEVERLY2
 	const BEVERLY3
 	const RUTH
 	const GEORGIA
-	const JAIME
+	const JAIME ; custom pal
 	const BOONE
 	const ELEANOR
 
-	trainerclass OFFICERM ; 2c
+	trainerclass OFFICERM
 	const KEITH
 	const DIRK
 
-	trainerclass OFFICERF ; 2d
+	trainerclass OFFICERF
 	const JAMIE
 	const MARA
 	const JENNY
 
-	trainerclass NURSE ; 2e
+	trainerclass NURSE
 	const BEATRICE
 	const KEIKO
 	const JOY
 	const WINIFRED
 
-	trainerclass POKEMANIAC ; 2f
+	trainerclass POKEMANIAC
 	const BRENT1
 	const BRENT2
 	const BRENT3
 	const BRENT4
-	const LARRY
+	const POKEMANIAC_LARRY
 	const ANDREW
 	const CALVIN
 	const SHANE
@@ -412,14 +407,14 @@ DEF CRYS EQU __trainer_class__
 	const MILLER
 	const AIDAN
 
-	trainerclass COSPLAYER ; 30
+	trainerclass COSPLAYER
 	const CLARA
 	const CHLOE
 	const BROOKE
 	const KUROKO
 	const LYRIC
 
-	trainerclass SUPER_NERD ; 31
+	trainerclass SUPER_NERD
 	const STAN
 	const ERIC
 	const SAM
@@ -441,13 +436,13 @@ DEF CRYS EQU __trainer_class__
 	const DAVE
 	const KOUTA
 
-	trainerclass LASS ; 32
+	trainerclass LASS
 	const DANA1
 	const DANA2
 	const DANA3
 	const DANA4
 	const DANA5
-	const CATHY
+	const CATHY ; custom pal
 	const AMANDA
 	const KRISE
 	const CONNIE
@@ -468,7 +463,7 @@ DEF CRYS EQU __trainer_class__
 	const DUPLICA
 	const MAVIS
 
-	trainerclass BEAUTY ; 33
+	trainerclass BEAUTY
 	const VICTORIA
 	const SAMANTHA
 	const CASSIE
@@ -476,7 +471,7 @@ DEF CRYS EQU __trainer_class__
 	const VALENCIA
 	const OLIVIA
 	const CALLIE
-	const CASSANDRA
+	const CASSANDRA ; custom pal
 	const CHARLOTTE
 	const BRIDGET
 	const VERONICA
@@ -484,7 +479,7 @@ DEF CRYS EQU __trainer_class__
 	const RACHAEL
 	const IOANA
 
-	trainerclass BUG_MANIAC ; 34
+	trainerclass BUG_MANIAC
 	const LOU
 	const ROB
 	const ED
@@ -500,14 +495,14 @@ DEF CRYS EQU __trainer_class__
 	const DYLAN
 	const KAI
 
-	trainerclass RUIN_MANIAC ; 35
+	trainerclass RUIN_MANIAC
 	const JONES
 	const LELAND
 	const PETRY
 	const GLYN
 	const SMILTE
 
-	trainerclass FIREBREATHER ; 36
+	trainerclass FIREBREATHER
 	const OTIS
 	const DICK
 	const NED
@@ -520,7 +515,7 @@ DEF CRYS EQU __trainer_class__
 	const OLEG
 	const TALA
 
-	trainerclass JUGGLER ; 37
+	trainerclass JUGGLER
 	const IRWIN1
 ;	const IRWIN2
 ;	const IRWIN3
@@ -528,7 +523,7 @@ DEF CRYS EQU __trainer_class__
 	const FRITZ
 	const HORTON
 
-	trainerclass SCHOOLBOY ; 38
+	trainerclass SCHOOLBOY
 	const JACK1
 	const JACK2
 	const JACK3
@@ -558,15 +553,15 @@ DEF CRYS EQU __trainer_class__
 	const TORIN
 	const TRAVIS
 
-	trainerclass SCHOOLGIRL ; 39
+	trainerclass SCHOOLGIRL
 	const MOLLY
 	const ELIZA
 	const FAITH
 	const SARAH
 	const ISABEL
-	const IMOGEN
+	const IMOGEN ; custom pal
 
-	trainerclass PSYCHIC_T ; 3a
+	trainerclass PSYCHIC_T
 	const NATHAN
 	const FRANKLIN
 	const HERMAN
@@ -583,7 +578,7 @@ DEF CRYS EQU __trainer_class__
 	const URI
 	const VIRGIL
 
-	trainerclass HEX_MANIAC ; 3b
+	trainerclass HEX_MANIAC
 	const TAMARA
 	const ASHLEY
 	const AMY
@@ -595,7 +590,7 @@ DEF CRYS EQU __trainer_class__
 	const BETHANY
 	const CORYN
 
-	trainerclass SAGE ; 3c
+	trainerclass SAGE
 	const CHOW
 	const NICO
 	const JIN
@@ -605,29 +600,29 @@ DEF CRYS EQU __trainer_class__
 	const EDMOND
 	const NEAL
 
-	trainerclass MEDIUM ; 3d
+	trainerclass MEDIUM
 	const MARTHA
 	const GRACE
 	const REBECCA
 	const DORIS
 
-	trainerclass KIMONO_GIRL ; 3e
+	trainerclass KIMONO_GIRL
 	const NAOKO
-	const SAYO
-	const ZUKI
-	const KUNI
-	const MIKI
-	const MAKO
-	const AMI
-	const MINA
+	const SAYO ; custom pal
+	const ZUKI ; custom pal
+	const KUNI ; custom pal
+	const MIKI ; custom pal
+	const MAKO ; custom pal
+	const AMI ; custom pal
+	const MINA ; custom pal
 
-	trainerclass ELDER ; 3f
+	trainerclass ELDER
 	const LI
-	const GAKU
-	const MASA
-	const KOJI
+	const GAKU ; custom pal
+	const MASA ; custom pal
+	const KOJI ; custom pal
 
-	trainerclass SR_AND_JR ; 40
+	trainerclass SR_AND_JR
 	const JOANDCATH1
 	const JOANDCATH2
 	const IVYANDAMY1
@@ -635,7 +630,7 @@ DEF CRYS EQU __trainer_class__
 	const BEAANDMAY1
 	const BEAANDMAY2
 
-	trainerclass COUPLE ; 41
+	trainerclass COUPLE
 	const GAILANDELI1
 	const GAILANDELI2
 	const DUFFANDEDA1
@@ -648,10 +643,10 @@ DEF CRYS EQU __trainer_class__
 	const VICANDTARA2
 	const TIMANDSUE1
 	const TIMANDSUE2
-	const JOEANDJO1
-	const JOEANDJO2
+	const JOEANDJO1 ; custom pal
+	const JOEANDJO2 ; custom pal
 
-	trainerclass GENTLEMAN ; 42
+	trainerclass GENTLEMAN
 	const PRESTON
 	const EDWARD
 	const GREGORY
@@ -660,16 +655,16 @@ DEF CRYS EQU __trainer_class__
 	const CAMUS
 	const GEOFFREY
 
-	trainerclass RICH_BOY ; 43
+	trainerclass RICH_BOY
 	const WINSTON
 	const GERALD
 	const IRVING
-	const TOBIN
+	const TOBIN ; custom pal
 
-	trainerclass LADY ; 44
+	trainerclass LADY
 	const JESSICA
 
-	trainerclass BREEDER ; 45
+	trainerclass BREEDER
 	const JULIE
 	const THERESA
 	const JODY
@@ -677,36 +672,36 @@ DEF CRYS EQU __trainer_class__
 	const SOPHIE
 	const BRENDA
 
-	trainerclass BAKER ; 46
+	trainerclass BAKER
 	const CHELSIE
 	const SHARYN
 	const MARGARET
 	const OLGA
 
-	trainerclass COWGIRL ; 47
+	trainerclass COWGIRL
 	const ANNIE
 	const APRIL
 	const DANIELA
 
-	trainerclass SAILOR ; 48
+	trainerclass SAILOR
 	const HUEY1
 	const HUEY2
 	const HUEY3
 	const HUEY4
 	const EUGENE
 	const TERRELL
-	const KENT
+	const KENT ; custom pal
 	const ERNEST
 	const JEFF
-	const GARRETT
+	const GARRETT ; custom pal
 	const KENNETH
 	const STANLY
-	const HARRY
+	const HARRY ; custom pal
 	const PARKER
 	const EDDIE
 	const HARVEY
 
-	trainerclass SWIMMERM ; 49
+	trainerclass SWIMMERM
 	const HAROLD
 	const SIMON
 	const RANDALL
@@ -725,12 +720,12 @@ DEF CRYS EQU __trainer_class__
 	const WALTER
 	const LEWIS
 	const MICHEL
-	const LUCAS
+	const LUCAS ; custom pal
 	const FRANK
-	const NADAR
+	const NADAR ; custom pal
 	const CONRAD
 	const ROMEO
-	const MALCOLM
+	const MALCOLM ; custom pal
 	const ARMAND
 	const THOMAS
 	const SWIMMERM_LUIS
@@ -738,9 +733,9 @@ DEF CRYS EQU __trainer_class__
 	const DUANE
 	const ESTEBAN
 	const EZRA
-	const ASHE
+	const ASHE ; custom pal
 
-	trainerclass SWIMMERF ; 4a
+	trainerclass SWIMMERF
 	const ELAINE
 	const PAULA
 	const KAYLEE
@@ -756,7 +751,7 @@ DEF CRYS EQU __trainer_class__
 	const DIANA
 	const BRIANA
 	const VIOLA
-	const KATIE
+	const KATIE ; custom pal
 	const JILL
 	const LISA
 	const ALISON
@@ -765,29 +760,29 @@ DEF CRYS EQU __trainer_class__
 	const NATALIA
 	const BARBARA
 	const SALLY
-	const TARA
+	const TARA ; custom pal
 	const MAYU
 	const LEONA
 	const CHELAN
 	const KENDRA
 	const WODA
-	const RACHEL
-	const MARINA
+	const RACHEL ; custom pal
+	const MARINA ; custom pal
 
-	trainerclass BURGLAR ; 4b
+	trainerclass BURGLAR
 	const DUNCAN
 	const ORSON
 	const COREY
 	const PETE
 	const LOUIS
 
-	trainerclass PI ; 4c
+	trainerclass PI
 	const LOOKER
 
-	trainerclass SCIENTIST ; 4d
+	trainerclass SCIENTIST
 	const LOWELL
 	const DENNETT
-	const LINDEN
+	const LINDEN ; custom pal
 	const OSKAR
 	const BRAYDON
 	const CARL
@@ -797,14 +792,14 @@ DEF CRYS EQU __trainer_class__
 	const PIOTR
 	const SANDERS
 
-	trainerclass ROCKET_SCIENTIST ; 4e
+	trainerclass ROCKET_SCIENTIST
 	const ROSS
 	const MITCH
 	const JED
 	const MARC
 	const RICH
 
-	trainerclass BOARDER ; 4f
+	trainerclass BOARDER
 	const RONALD
 	const BRAD
 	const DOUGLAS
@@ -813,14 +808,14 @@ DEF CRYS EQU __trainer_class__
 	const STEFAN
 	const MAX
 
-	trainerclass SKIER ; 50
+	trainerclass SKIER
 	const ROXANNE
 	const CLARISSA
 	const CADY
 	const MARIA
 	const BECKY
 
-	trainerclass BLACKBELT_T ; 51
+	trainerclass BLACKBELT_T
 	const KENJI1
 ;	const KENJI2
 ;	const KENJI3
@@ -835,7 +830,7 @@ DEF CRYS EQU __trainer_class__
 	const TAKEO
 	const RYLAN
 
-	trainerclass BATTLE_GIRL ; 52
+	trainerclass BATTLE_GIRL
 	const SUBARU
 	const DIANE
 	const KAGAMI
@@ -845,7 +840,7 @@ DEF CRYS EQU __trainer_class__
 	const EMY
 	const SASHA
 
-	trainerclass DRAGON_TAMER ; 53
+	trainerclass DRAGON_TAMER
 	const PAUL
 	const DARIN
 	const ADAM
@@ -853,7 +848,7 @@ DEF CRYS EQU __trainer_class__
 	const KAZU
 	const AEGON
 
-	trainerclass ENGINEER ; 54
+	trainerclass ENGINEER
 	const SMITH
 	const BERNIE
 	const CAMDEN
@@ -864,33 +859,33 @@ DEF CRYS EQU __trainer_class__
 	const GUSTAV
 	const NICOLAS
 
-	trainerclass TEACHER_F ; 55
+	trainerclass TEACHER_F
 	const COLETTE
-	const HILLARY
+	const HILLARY ; custom pal
 	const SHIRLEY
 	const KATHRYN
 	const CLARICE
 	const SERENA
 
-	trainerclass TEACHER_M ; 56
+	trainerclass TEACHER_M
 	const NOLAN
 
-	trainerclass GUITARISTM ; 57
+	trainerclass GUITARISTM
 	const CLYDE
 	const VINCENT
 	const ROGER
 	const EZEKIEL
-	const BIFF
+	const BIFF ; custom pal
 	const GEDDY
 
-	trainerclass GUITARISTF ; 58
+	trainerclass GUITARISTF
 	const JANET
 	const MORGAN
 	const RITSUKO
 	const WANDA
 	const JACLYN
 
-	trainerclass BIKER ; 59
+	trainerclass BIKER
 	const DWAYNE
 	const HARRIS
 	const ZEKE
@@ -905,58 +900,58 @@ DEF CRYS EQU __trainer_class__
 	const TEDDY
 	const TYRONE
 
-	trainerclass ROUGHNECK ; 5a
+	trainerclass ROUGHNECK
 	const BRIAN
 	const THERON
 	const MARKEY
 
-	trainerclass TAMER ; 5b
+	trainerclass TAMER
 	const BRETT
 	const VINCE
 	const OSWALD
 	const JORDAN
 
-	trainerclass ARTIST ; 5c
+	trainerclass ARTIST
 	const REINA
 	const ALINA
 	const MARLENE
 	const RIN
 
-	trainerclass AROMA_LADY ; 5d
+	trainerclass AROMA_LADY
 	const DAHLIA
 	const BRYONY
 	const HEATHER
 	const HOLLY
 	const PEONY
 
-	trainerclass SOLDIER ; 5e
+	trainerclass SOLDIER
 
-	trainerclass WAITER ; 5f
+	trainerclass WAITER
 	const DAVID
 
-	trainerclass WAITRESS ; 60
+	trainerclass WAITRESS
 
-	trainerclass SIGHTSEERM ; 61
+	trainerclass SIGHTSEERM
 	const JASKA
 	const BLAISE
 	const GARETH
 	const CHESTER
 	const HARI
 
-	trainerclass SIGHTSEERF ; 62
+	trainerclass SIGHTSEERF
 	const ROSIE
 	const KAMILA
 	const NOELLE
 	const PILAR
 	const LENIE
 
-	trainerclass SIGHTSEERS ; 63
+	trainerclass SIGHTSEERS
 	const LIANDSU1
 	const LIANDSU2
 	const CYANDVI1
 	const CYANDVI2
 
-	trainerclass COOLTRAINERM ; 64
+	trainerclass COOLTRAINERM
 	const GAVEN1
 	const GAVEN2
 	const GAVEN3
@@ -981,7 +976,7 @@ DEF CRYS EQU __trainer_class__
 	const FERGUS
 	const DARIC
 
-	trainerclass COOLTRAINERF ; 65
+	trainerclass COOLTRAINERF
 	const BETH1
 	const BETH2
 	const BETH3
@@ -1008,7 +1003,7 @@ DEF CRYS EQU __trainer_class__
 	const NEESHA
 	const CHIARA
 
-	trainerclass ACE_DUO ; 66
+	trainerclass ACE_DUO
 	const ELANANDIDA1
 	const ELANANDIDA2
 	const ARAANDBELA1
@@ -1022,136 +1017,169 @@ DEF CRYS EQU __trainer_class__
 	const DANANDCARA1
 	const DANANDCARA2
 
-	trainerclass VETERANM ; 67
+	trainerclass VETERANM
 	const MATT
 	const REMY
 	const BARKHORN
 	const EN
 
-	trainerclass VETERANF ; 68
+	trainerclass VETERANF
 	const JOANNE
 	const JONET
 	const LITVYAK
 	const MADOKA
 
-	trainerclass PROTON ; 69
+	trainerclass PROTON
 	const PROTON1
 	const PROTON2
 
-	trainerclass PETREL ; 6a
+	trainerclass PETREL
 	const PETREL1
 	const PETREL2
 
-	trainerclass ARCHER ; 6b
+	trainerclass ARCHER
 	const ARCHER1
 	const ARCHER2
 
-	trainerclass ARIANA ; 6c
+	trainerclass ARIANA
 	const ARIANA1
 	const ARIANA2
 
-	trainerclass GIOVANNI ; 6d
+	trainerclass GIOVANNI
 	const GIOVANNI1
 	const GIOVANNI2
 
-	trainerclass PROF_OAK ; 6e
+	trainerclass PROF_OAK
 
-	trainerclass PROF_ELM ; 6f
+	trainerclass PROF_ELM
 
-	trainerclass PROF_IVY ; 70
+	trainerclass PROF_IVY
 
-	trainerclass MYSTICALMAN ; 71
+	trainerclass MYSTICALMAN
 	const EUSINE
 
-	trainerclass KARATE_KING ; 72
+	trainerclass KARATE_KING
 	const KIYO
 
-	trainerclass TOWERTYCOON ; 73
+	trainerclass TOWERTYCOON
 
-	trainerclass FACTORYHEAD ; 74
+	trainerclass FACTORYHEAD
 
-	trainerclass JESSIE_JAMES ; 75
+	trainerclass JESSIE_JAMES
 
-	trainerclass LORELEI ; 76
+	trainerclass LORELEI
 
-	trainerclass AGATHA ; 77
+	trainerclass AGATHA
 
-	trainerclass STEVEN ; 78
+	trainerclass STEVEN
 
-	trainerclass CYNTHIA ; 79
+	trainerclass CYNTHIA
 
-	trainerclass INVER ; 7a
+	trainerclass INVER
 
-	trainerclass CHERYL ; 7b
+	trainerclass CHERYL
 
-	trainerclass RILEY ; 7c
+	trainerclass RILEY
 
-	trainerclass BUCK ; 7d
+	trainerclass BUCK
 
-	trainerclass MARLEY ; 7e
+	trainerclass MARLEY
 
-	trainerclass MIRA ; 7f
+	trainerclass MIRA
 
-	trainerclass ANABEL ; 80
+	trainerclass ANABEL
 
-	trainerclass DARACH ; 81
+	trainerclass DARACH
 
-	trainerclass CAITLIN ; 82
+	trainerclass CAITLIN
 
-	trainerclass CANDELA ; 83
+	trainerclass CANDELA
 
-	trainerclass BLANCHE ; 84
+	trainerclass BLANCHE
 
-	trainerclass SPARK_T ; 85
+	trainerclass SPARK_T
 
-	trainerclass FLANNERY ; 86
+	trainerclass FLANNERY
 
-	trainerclass MAYLENE ; 87
+	trainerclass MAYLENE
 
-	trainerclass MARLON ; 88
+	trainerclass MARLON
 
-	trainerclass VALERIE ; 89
+	trainerclass VALERIE
 
-	trainerclass KUKUI ; 8a
+	trainerclass KUKUI
 
-	trainerclass PIERS ; 8b
+	trainerclass PIERS
 
-	trainerclass KATY ; 8c
+	trainerclass LARRY
 
-	trainerclass VICTOR  ; 8d
+	trainerclass VICTOR  ; 8e
 
-	trainerclass BILL_T ; 8e
+	trainerclass BILL_T
 
-	trainerclass YELLOW ; 8f
+	trainerclass YELLOW
 
-	trainerclass WALKER ; 90
+	trainerclass WALKER
 
-	trainerclass IMAKUNI ; 91
+	trainerclass IMAKUNI
 
-	trainerclass LAWRENCE ; 92
+	trainerclass LAWRENCE
 
-	trainerclass REI ; 93
+	trainerclass REI
 
 DEF NUM_TRAINER_CLASSES EQU __trainer_class__ - 1
 
-	trainerclass OMASTAR_FOSSIL ; 94
+	trainerclass OMASTAR_FOSSIL
 
-	trainerclass KABUTOPS_FOSSIL ; 95
+	trainerclass KABUTOPS_FOSSIL
 
-	trainerclass AERODACTYL_FOSSIL ; 96
+	trainerclass AERODACTYL_FOSSIL
 
-	trainerclass CUBONE_ARMOR ; 97
+	trainerclass CUBONE_ARMOR
 
-	trainerclass METEORITE ; 98
+	trainerclass METEORITE
 
-	trainerclass SILHOUETTE ; 99
+	trainerclass SILHOUETTE
 
 DEF NUM_TRAINER_CLASS_PICS EQU __trainer_class__ - 1
-	trainerpal SAYO ; 9a
-	trainerpal ZUKI ; 9b
-	trainerpal KUNI ; 9c
-	trainerpal MIKI ; 9d
-	trainerpal MAKO ; 9e
-	trainerpal AMI  ; 9f
-	trainerpal MINA ; a0
+
+DEF __trainer_pal__ = 0
+
+MACRO trainerpal
+	DEF TRAINERPAL_\1 = __trainer_pal__
+	DEF __trainer_pal__ += 1
+ENDM
+
+	trainerpal NONE
+
+; kimono girls
+	trainerpal SAYO
+	trainerpal ZUKI
+	trainerpal KUNI
+	trainerpal MIKI
+	trainerpal MAKO
+	trainerpal AMI  ; 06
+	trainerpal MINA
+
+; elders (wise trio)
+	trainerpal GAKU
+	trainerpal MASA
+	trainerpal KOJI
+
+; dark-skinned or tanned trainers
+	trainerpal DARK_CAMPER
+	trainerpal DARK_BIRD_KEEPER
+	trainerpal DARK_POKEFANF
+	trainerpal DARK_LASS
+	trainerpal DARK_BEAUTY
+	trainerpal DARK_SCHOOLGIRL
+	trainerpal DARK_COUPLE
+	trainerpal DARK_RICH_BOY
+	trainerpal DARK_SAILOR
+	trainerpal DARK_SWIMMERM
+	trainerpal DARK_SWIMMERF
+	trainerpal DARK_SCIENTIST
+	trainerpal DARK_TEACHER_F
+	trainerpal DARK_GUITARIST_M
+
 DEF NUM_TRAINER_PALS EQU __trainer_pal__ - 1

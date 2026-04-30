@@ -226,22 +226,19 @@ Gen2ToGen2LinkComms:
 	ld a, [wLinkMode]
 	cp LINK_COLOSSEUM
 	jr nz, .ready_to_trade
+
 	ld a, [wLinkOtherPlayerGender]
-	ld b, CAL
-	and a ; PLAYER_MALE
-	jr z, .got_other_gender
-	assert CAL - 1 == CARRIE
-	dec b
-	dec a ; PLAYER_FEMALE
-	jr z, .got_other_gender
-	; PLAYER_ENBY
-	ld b, JACKY
-.got_other_gender
-	ld a, b
+	assert PLAYER_MALE + 1 == CAL
+	assert PLAYER_FEMALE + 1 == CARRIE
+	assert PLAYER_ENBY + 1 == JACKY
+	assert PLAYER_BETA + 1 == EUNA
+	inc a
 	ld [wOtherTrainerClass], a
+	xor a ; TRAINERPAL_NONE
+	ld [wTrainerPal], a
+
 	call ClearScreen
 	call Link_WaitBGMap
-
 	ld hl, wOptions2
 	ld a, [hl]
 	push af
@@ -261,7 +258,7 @@ Gen2ToGen2LinkComms:
 	pop af
 	ldh [rIF], a
 
-	predef StartBattle
+	farcall StartBattle
 
 	ldh a, [rIF]
 	ld h, a
@@ -653,7 +650,7 @@ InitTradeSpeciesList:
 	ret
 
 .TradeScreenTilemap:
-INCBIN "gfx/trade/border.tilemap.lz"
+INCBIN "gfx/trade/border.tilemap.lzp"
 
 .Cancel:
 	text "Cancel"
@@ -1581,7 +1578,7 @@ LinkTrade:
 
 	xor a ; REMOVE_PARTY
 	ld [wPokemonWithdrawDepositParameter], a
-	predef RemoveMonFromParty
+	farcall RemoveMonFromParty
 	ld a, [wPartyCount]
 	dec a
 	ld [wCurPartyMon], a
@@ -1603,7 +1600,7 @@ LinkTrade:
 	ldh a, [hSerialConnectionStatus]
 	cp USING_EXTERNAL_CLOCK
 	jr z, .player_2
-	predef TradeAnimation
+	call TradeAnimation
 	jr .done_animation
 .player_2
 	call TradeAnimationPlayer2

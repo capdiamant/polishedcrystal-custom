@@ -19,9 +19,18 @@ GetFirstPokemonHappiness:
 	ld bc, MON_HAPPINESS - MON_IS_EGG
 	add hl, bc
 	ld a, [hl]
-	ldh [hScriptVar], a
-	call GetPokemonName
-	jmp CopyPokemonName_Buffer1_Buffer3
+	jr _FinishSelectedMonCheck
+
+GetSelectedPokemonHappiness:
+	ld a, [wCurPartySpecies]
+	ld [wNamedObjectIndex], a
+	ld a, [wCurForm]
+	ld [wNamedObjectIndex+1], a
+	ld a, [wCurPartyMon]
+	ld hl, wPartyMon1Happiness
+	call GetPartyLocation
+	ld a, [hl]
+	jr _FinishSelectedMonCheck
 
 CheckFirstMonIsEgg:
 	ld a, [wPartyMon1Species]
@@ -30,11 +39,12 @@ CheckFirstMonIsEgg:
 	assert MON_IS_EGG == MON_FORM
 	ld [wNamedObjectIndex+1], a
 	bit MON_IS_EGG_F, a
-	ld a, $1
-	jr nz, .egg
+	ld a, TRUE
+	jr nz, _FinishSelectedMonCheck
 	xor a
+	; fallthrough
 
-.egg
+_FinishSelectedMonCheck:
 	ldh [hScriptVar], a
 	call GetPokemonName
 	jmp CopyPokemonName_Buffer1_Buffer3
@@ -65,7 +75,6 @@ ChangeHappiness:
 	cp HAPPINESS_THRESHOLD_2
 	jr c, .ok
 	inc e
-
 .ok
 	ld b, 0
 	ld hl, HappinessChanges
@@ -75,7 +84,7 @@ ChangeHappiness:
 	ld d, 0
 	add hl, de
 	ld a, [hl]
-	cp $64 ; why not $80?
+	cp $80
 	pop de
 
 	ld a, [de]
@@ -159,7 +168,7 @@ StepHappiness::
 	dec a
 	ld [wCurPartyMon], a
 	ld c, HAPPINESS_STEP
-	predef ChangeHappiness
+	call ChangeHappiness
 	ld a, [wCurPartyMon]
 	jr .loop
 
@@ -191,7 +200,7 @@ DayCareStep::
 
 .check_egg
 	ld hl, wDayCareMan
-	bit 5, [hl] ; egg
+	bit DAYCAREMAN_MONS_COMPATIBLE_F, [hl] ; egg
 	ret z
 	ld hl, wStepsToEgg
 	dec [hl]
@@ -225,8 +234,8 @@ DayCareStep::
 	cp b
 	ret nc
 	ld hl, wDayCareMan
-	res 5, [hl]
-	set 6, [hl]
+	res DAYCAREMAN_MONS_COMPATIBLE_F, [hl]
+	set DAYCAREMAN_HAS_EGG_F, [hl]
 	ret
 
 .daycare_exp
@@ -241,7 +250,7 @@ DayCareStep::
 	ret nz
 	dec hl
 	ld a, [hl]
-	cp (MAX_DAY_CARE_EXP / $10000) - 1
+	cp (MAX_DAY_CARE_EXP >> 16) - 1
 	ret nc
 	inc [hl]
 	ret

@@ -90,7 +90,7 @@ Landmarks:
 	landmark 124,  28, Route25Name
 	landmark 140,  28, CeruleanCapeName
 	landmark 108,  52, Route5Name
-	landmark 114,  66, UndergroundName
+	landmark 114,  66, UndergroundPathName
 	landmark 108,  68, Route6Name
 	landmark 108,  76, VermilionCityName
 	landmark 116,  68, DiglettsCaveName
@@ -266,7 +266,7 @@ FastShipName:          rawchar "Fast Ship@"
 ViridianForestName:    rawchar "Viridian¯Forest@"
 DiglettsCaveName:      rawchar "Diglett's¯Cave@"
 TohjoFallsName:        rawchar "Tohjo Falls@"
-UndergroundName:       rawchar "Underground@"
+UndergroundPathName:   rawchar "Underground¯Path@"
 BattleTowerName:       rawchar "Battle¯Tower@"
 CliffEdgeGateName:     rawchar "Cliff Edge¯Gate@"
 CliffCaveName:         rawchar "Cliff Cave@"

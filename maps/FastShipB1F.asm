@@ -1,5 +1,7 @@
 FastShipB1F_MapScriptHeader:
 	def_scene_scripts
+	scene_const SCENE_FASTSHIPB1F_SAILOR_BLOCKS
+	scene_const SCENE_FASTSHIPB1F_NOOP
 
 	def_callbacks
 
@@ -8,8 +10,8 @@ FastShipB1F_MapScriptHeader:
 	warp_event 27, 11, FAST_SHIP_1F, 12
 
 	def_coord_events
-	coord_event 26,  5, 0, FastShipB1FSailorBlocksLeft
-	coord_event 27,  5, 0, FastShipB1FSailorBlocksRight
+	coord_event 26,  5, SCENE_FASTSHIPB1F_SAILOR_BLOCKS, FastShipB1FSailorBlocksLeft
+	coord_event 27,  5, SCENE_FASTSHIPB1F_SAILOR_BLOCKS, FastShipB1FSailorBlocksRight
 
 	def_bg_events
 
@@ -20,7 +22,7 @@ FastShipB1F_MapScriptHeader:
 	object_event  2,  2, SPRITE_PICNICKER, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, 0, OBJECTTYPE_GENERICTRAINER, 1, GenericTrainerPicnickerDebra, EVENT_FAST_SHIP_PASSENGERS_FIRST_TRIP
 	object_event 22,  7, SPRITE_JUGGLER, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, 0, OBJECTTYPE_GENERICTRAINER, 1, GenericTrainerJugglerFritz, EVENT_FAST_SHIP_PASSENGERS_FIRST_TRIP
 	object_event 10, 11, SPRITE_BAKER, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, 0, OBJECTTYPE_GENERICTRAINER, 2, GenericTrainerBakerSharyn, EVENT_FAST_SHIP_PASSENGERS_FIRST_TRIP
-	object_event 13,  2, SPRITE_SAILOR, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, 0, OBJECTTYPE_GENERICTRAINER, 4, GenericTrainerSailorGarrett, EVENT_FAST_SHIP_PASSENGERS_EASTBOUND
+	object_event 13,  2, SPRITE_SAILOR, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, PAL_NPC_DARK_BLUE, OBJECTTYPE_TRAINER, 4, TrainerSailorGarrett, EVENT_FAST_SHIP_PASSENGERS_EASTBOUND
 	object_event 21,  6, SPRITE_FISHER, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, 0, OBJECTTYPE_GENERICTRAINER, 3, GenericTrainerFisherJonah, EVENT_FAST_SHIP_PASSENGERS_EASTBOUND
 	object_event 11,  9, SPRITE_BLACK_BELT, SPRITEMOVEDATA_SPINCLOCKWISE, 0, 0, -1, 0, OBJECTTYPE_GENERICTRAINER, 3, GenericTrainerBlackbeltWai, EVENT_FAST_SHIP_PASSENGERS_EASTBOUND
 	object_event 19,  2, SPRITE_SAILOR, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, 0, OBJECTTYPE_GENERICTRAINER, 4, GenericTrainerSailorKenneth, EVENT_FAST_SHIP_PASSENGERS_WESTBOUND
@@ -64,7 +66,20 @@ FastShipB1FSailorScript:
 	iftrue_jumpopenedtext FastShipB1FOnDutySailorRefusedText
 	setevent EVENT_FAST_SHIP_INFORMED_ABOUT_LAZY_SAILOR
 	clearevent EVENT_FAST_SHIP_CABINS_NNW_NNE_NE_SAILOR
-	jumpopenedtext FastShipB1FOnDutySailorText
+	jumpthisopenedtext
+
+	text "Hey, kid. Could I"
+	line "get you to look"
+	cont "for my buddy?"
+
+	para "He's goofing off"
+	line "somewhere, that"
+	cont "lazy bum!"
+
+	para "I want to go find"
+	line "him, but I'm on"
+	cont "duty right now."
+	done
 
 .LazySailor:
 	writetext FastShipB1FOnDutySailorThanksText
@@ -74,7 +89,13 @@ FastShipB1FSailorScript:
 
 .NotFoundGirl:
 	promptbutton
-	jumpopenedtext FastShipB1FOnDutySailorSawLittleGirlText
+	jumpthisopenedtext
+
+	text "A little girl?"
+
+	para "I may have seen"
+	line "her go by here."
+	done
 
 GenericTrainerSailorJeff:
 	generictrainer SAILOR, JEFF, EVENT_BEAT_SAILOR_JEFF, SailorJeffSeenText, SailorJeffBeatenText
@@ -114,8 +135,12 @@ GenericTrainerBakerSharyn:
 	line "my baking."
 	done
 
-GenericTrainerSailorGarrett:
-	generictrainer SAILOR, GARRETT, EVENT_BEAT_SAILOR_GARRETT, SailorGarrettSeenText, SailorGarrettBeatenText
+TrainerSailorGarrett:
+	trainer SAILOR, GARRETT, EVENT_BEAT_SAILOR_GARRETT, SailorGarrettSeenText, SailorGarrettBeatenText, 0, .Script, TRAINERPAL_DARK_SAILOR
+
+.Script:
+	endifjustbattled
+	jumpthistextfaceplayer
 
 	text "We get different"
 	line "passengers from"
@@ -197,19 +222,6 @@ FastShipB1FSailorBlocksLeftMovement:
 	turn_head_down
 	step_end
 
-FastShipB1FOnDutySailorText:
-	text "Hey, kid. Could I"
-	line "get you to look"
-	cont "for my buddy?"
-
-	para "He's goofing off"
-	line "somewhere, that"
-	cont "lazy bum!"
-
-	para "I want to go find"
-	line "him, but I'm on"
-	cont "duty right now."
-	done
 
 FastShipB1FOnDutySailorRefusedText:
 	text "Oh, gee…"
@@ -226,12 +238,6 @@ FastShipB1FOnDutySailorThanksText:
 	line "slacking off!"
 	done
 
-FastShipB1FOnDutySailorSawLittleGirlText:
-	text "A little girl?"
-
-	para "I may have seen"
-	line "her go by here."
-	done
 
 FastShipB1FOnDutySailorDirectionsText:
 	text "The dining room is"

@@ -33,10 +33,11 @@ RunBattleTowerTrainer:
 
 	xor a
 	ld [wLinkMode], a
+	ld [wTrainerPal], a
 	farcall HealParty
 	farcall PopulateBattleTowerTeam
 
-	predef StartBattle
+	farcall StartBattle
 
 	farcall LoadPokemonData
 	farcall HealParty

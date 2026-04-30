@@ -761,7 +761,7 @@ TradeAnim_GetFrontpic:
 	ld [wCurForm], a
 	call GetBaseData
 	pop de
-	predef_jump GetFrontpic
+	farjp GetFrontpic
 
 TradeAnim_GetNickname:
 	push de
@@ -792,7 +792,7 @@ TradeAnim_ShowFrontpic:
 	xor a
 	ldh [hGraphicStartTile], a
 	lb bc, 7, 7
-	predef PlaceGraphic
+	farcall PlaceGraphic
 	jmp ApplyTilemapInVBlank
 
 TraideAnim_Wait80:
@@ -1315,6 +1315,6 @@ INCBIN "gfx/trade/game_boy.tilemap"
 TradeLinkTubeTilemap: ; 12x3
 INCBIN "gfx/trade/link_cable.tilemap"
 
-TradeBallPoofCableGFX:  INCBIN "gfx/trade/ball_poof_cable.2bpp.lz"
+TradeBallPoofCableGFX:  INCBIN "gfx/trade/ball_poof_cable.2bpp.lzp"
 TradeBubbleGFX: INCBIN "gfx/trade/bubble.2bpp"
-TradeGameBoyLZ: INCBIN "gfx/trade/game_boy_cable.2bpp.lz"
+TradeGameBoyLZ: INCBIN "gfx/trade/game_boy_cable.2bpp.lzp"
