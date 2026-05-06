@@ -1958,22 +1958,22 @@ BattleFactoryBattleRoom_BlockData:
 
 SECTION "NewTownhall_BlockData", ROMX
 NewTownhall_BlockData:
-	INCBIN "maps/NewTownhall.ablk.lz"
+	INCBIN "maps/NewTownhall.ablk.lzp"
 
 SECTION "NewTHKiri_BlockData", ROMX
 NewTHKiri_BlockData:
-	INCBIN "maps/NewTHKiri.ablk.lz"
+	INCBIN "maps/NewTHKiri.ablk.lzp"
 
 SECTION "NewTHKiriBawah_BlockData", ROMX
 NewTHKiriBawah_BlockData:
-	INCBIN "maps/NewTHKiriBawah.ablk.lz"
+	INCBIN "maps/NewTHKiriBawah.ablk.lzp"
 
 SECTION "NewUjianHutan_BlockData", ROMX
 NewUjianHutan_BlockData:
-	INCBIN "maps/NewUjianHutan.ablk.lz"
+	INCBIN "maps/NewUjianHutan.ablk.lzp"
 
 SECTION "NewTHBawah_BlockData", ROMX
 NewTHBawah_BlockData:
-	INCBIN "maps/NewTHBawah.ablk.lz"
+	INCBIN "maps/NewTHBawah.ablk.lzp"
 
 ENDSECTION
