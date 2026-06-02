@@ -1976,4 +1976,8 @@ SECTION "NewTHBawah_BlockData", ROMX
 NewTHBawah_BlockData:
 	INCBIN "maps/NewTHBawah.ablk.lzp"
 
+SECTION "NewLubangAir_BlockData", ROMX
+NewLubangAir_BlockData:
+	INCBIN "maps/NewLubangAir.ablk.lzp"
+
 ENDSECTION
