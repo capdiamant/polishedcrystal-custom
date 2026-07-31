@@ -4,6 +4,7 @@ NewLubangAir_MapScriptHeader:
     def_callbacks
 
     def_warp_events
+    
 
     def_coord_events
 

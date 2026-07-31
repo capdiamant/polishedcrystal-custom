@@ -450,13 +450,13 @@ ENDM
 	map_attributes NewUjianHutan, NEW_UJIAN_HUTAN, $43, NORTH
 	connection north, NewTHKiriBawah, NEW_TH_KIRI_BAWAH, -22
 
-	map_attributes NewTHBawah, NEW_TH_BAWAH, $43, NORTH | WEST
+	map_attributes NewTHBawah, NEW_TH_BAWAH, $43, NORTH | SOUTH | WEST
 	connection north, NewTownhall, NEW_TOWNHALL, 3
+	connection south, NewLubangAir, NEW_LUBANG_AIR, 7
 	connection west, NewTHKiriBawah, NEW_TH_KIRI_BAWAH, -3
-	connection south, NewLubangAir, NEW_LUBANG_AIR, -7
 
 	map_attributes NewLubangAir, NEW_LUBANG_AIR, $43, NORTH
-	connection north, NewTHBawah, NEW_TH_BAWAH, 7
+	connection north, NewTHBawah, NEW_TH_BAWAH, -7
 
 	map_attributes NavelRockInside, NAVEL_ROCK_INSIDE, $9, NORTH | SOUTH
 	connection north, NavelRockInside, NAVEL_ROCK_INSIDE, 11
