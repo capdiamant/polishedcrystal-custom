@@ -714,5 +714,6 @@ ENDM
 	map_const NEW_UJIAN_HUTAN,							  24, 15 ;  4
 	map_const NEW_TH_BAWAH,							  	  21, 15 ;  5
 	map_const NEW_LUBANG_AIR,							  13, 13 ;  6
+	map_const NEW_LUBANG_KANAN,							  20,  9 ;  7
 
 DEF NUM_MAP_GROUPS EQU const_value ; 38

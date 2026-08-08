@@ -455,8 +455,12 @@ ENDM
 	connection south, NewLubangAir, NEW_LUBANG_AIR, 7
 	connection west, NewTHKiriBawah, NEW_TH_KIRI_BAWAH, -3
 
-	map_attributes NewLubangAir, NEW_LUBANG_AIR, $43, NORTH
+	map_attributes NewLubangAir, NEW_LUBANG_AIR, $43, NORTH | EAST
 	connection north, NewTHBawah, NEW_TH_BAWAH, -7
+	connection east, NewLubangKanan, NEW_LUBANG_KANAN, -1
+
+	map_attributes NewLubangKanan, NEW_LUBANG_KANAN, $43, WEST
+	connection west, NewLubangAir, NEW_LUBANG_AIR, 1
 
 	map_attributes NavelRockInside, NAVEL_ROCK_INSIDE, $9, NORTH | SOUTH
 	connection north, NavelRockInside, NAVEL_ROCK_INSIDE, 11

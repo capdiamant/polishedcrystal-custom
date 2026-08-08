@@ -1097,4 +1097,7 @@ INCLUDE "maps/NewTHBawah.asm"
 SECTION "New LubangAir Scripts", ROMX
 INCLUDE "maps/NewLubangAir.asm"
 
+SECTION "New LubangKanan Scripts", ROMX
+INCLUDE "maps/NewLubangKanan.asm"
+
 ENDSECTION

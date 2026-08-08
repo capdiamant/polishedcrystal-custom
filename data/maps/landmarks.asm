@@ -158,6 +158,7 @@ Landmarks:
 	landmark  30,  20, NewUjianHutanName
 	landmark  30,  40, NewTHBawahName
 	landmark  30,  50, NewLubangAirName
+	landmark, 30,  60, NewLubangKananName
 	assert_table_length NUM_LANDMARKS
 
 NewBarkTownName:       rawchar "New Bark¯Town@"
@@ -310,4 +311,5 @@ NewTHKiriBawahName:    rawchar "Jalan¯TH¯KiriBwh@"
 NewUjianHutanName:     rawchar "Hutan¯Ujian@"
 NewTHBawahName:		   rawchar "Jalan¯TH¯Bawah@"
 NewLubangAirName:	   rawchar "Lubang¯Air@"
+NewLubangKananName:	   rawchar "Lubang¯Kanan"
 SpecialMapName:        rawchar "?@"

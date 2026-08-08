@@ -154,6 +154,7 @@ DEF NEW_ISLAND_LANDMARK EQU const_value
 	const NEW_UJIAN_HUTAN    ; 94
 	const NEW_TH_BAWAH	     ; 95
 	const NEW_LUBANG_AIR	 ; 96
+	const NEW_LUBANG_KANAN	 ; 97
 
 DEF NUM_LANDMARKS EQU const_value
 

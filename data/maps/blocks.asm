@@ -1980,4 +1980,8 @@ SECTION "NewLubangAir_BlockData", ROMX
 NewLubangAir_BlockData:
 	INCBIN "maps/NewLubangAir.ablk.lzp"
 
+SECTION "NewLubangKanan_BlockData", ROMX
+NewLubangKanan_BlockData:
+	INCBIN "maps/NewLubangKanan.ablk.lzp"
+
 ENDSECTION
