@@ -1,7 +1,7 @@
-NAME := polishedcrystal
+NAME := polishedcustomdemo
 MODIFIERS :=
-VERSION := 3.2.3
-AUTHOR := RANGI42
+VERSION := 0.1
+AUTHOR := JIMMY
 
 ROM_NAME = $(NAME)$(MODIFIERS)-$(VERSION)
 EXTENSION := gbc
