@@ -715,4 +715,7 @@ ENDM
 	map_const ROUTE_35,                                   12, 18 ;  1
 	map_const ROUTE_36,                                   23,  9 ;  2
 
-DEF NUM_MAP_GROUPS EQU const_value ; 37
+	newgroup													 ; 40
+	map_const NEW_KAPAL,								  15, 10 ; 1
+
+DEF NUM_MAP_GROUPS EQU const_value ; 40

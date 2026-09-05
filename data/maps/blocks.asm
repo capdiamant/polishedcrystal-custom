@@ -1975,4 +1975,8 @@ SECTION "BattleFactoryBattleRoom_BlockData", ROMX
 BattleFactoryBattleRoom_BlockData:
 	INCBIN "maps/BattleFactoryBattleRoom.ablk.lzp"
 
+SECTION "NewIslandDemo_BlockData", ROMX
+NewKapal_BlockData:
+	INCBIN maps/NewKapal.ablk.lzp"
+
 ENDSECTION
