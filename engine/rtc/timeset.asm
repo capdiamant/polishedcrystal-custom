@@ -26,10 +26,11 @@ InitClock:
 	call SetDefaultBGPAndOBP
 	ld c, 10
 	call DelayFrames
-if !DEF(DEBUG)
-	ld hl, Text_WokeUpOak
-	call PrintText
-endc
+; aku comment utk pendekkan intro
+; if !DEF(DEBUG)
+; 	ld hl, Text_WokeUpOak
+; 	call PrintText
+; endc
 	ld hl, wTimeSetBuffer
 	ld bc, 50
 	xor a
@@ -75,19 +76,25 @@ endc
 	call SetMinutes
 	jr nc, .SetMinutesLoop
 
-	call BlackOutScreen
+	; aku comment utk buang WHOA text
+	; call BlackOutScreen
 
-	ld hl, Text_WhoaHoursMins
-	call PrintText
-	call YesNoBox
-	jr nc, .done
-	call BlackOutScreen
-	jr .loop
+	; ld hl, Text_WhoaHoursMins
+	; call PrintText
+	; call YesNoBox
+	; jr nc, .done
+	; call BlackOutScreen
+	; jr .loop
+	jr .done	; aku tambah
 
 .done:
 	call SetTimeOfDay
 	ld hl, OakText_ResponseToSetTime
 	call PrintText
+	; aku tambah utk tambah delay sikit
+	ld c, 30	; wait 30 frames
+	call DelayFrames
+	; end of aku tambah
 	call WaitPressAorB_BlinkCursor
 	pop af
 	ldh [hInMenu], a
@@ -258,27 +265,34 @@ OakText_ResponseToSetTime:
 	text_asm
 	decoord 1, 14
 	call PrintHourColonMinute
-	ld a, [wInitHourBuffer]
-	cp MORN_HOUR
-	jr c, .nite
-	cp DAY_HOUR
-	jr c, .morn
-	cp EVE_HOUR
-	jr c, .day
-	cp NITE_HOUR
-	jr c, .eve
-.nite:
-	ld hl, .sodark
+	; aku tambah utk buang reaction to time
+	ld hl, .End
 	ret
-.morn:
-	ld hl, .overslept
-	ret
-.day:
-	ld hl, .yikes
-	ret
-.eve:
-	ld hl, .napped
-	ret
+.End:
+	text_end
+	; end of aku tambah
+	; aku buang bawah2 ni
+; 	ld a, [wInitHourBuffer]
+; 	cp MORN_HOUR
+; 	jr c, .nite
+; 	cp DAY_HOUR
+; 	jr c, .morn
+; 	cp EVE_HOUR
+; 	jr c, .day
+; 	cp NITE_HOUR
+; 	jr c, .eve
+; .nite:
+; 	ld hl, .sodark
+; 	ret
+; .morn:
+; 	ld hl, .overslept
+; 	ret
+; .day:
+; 	ld hl, .yikes
+; 	ret
+; .eve:
+; 	ld hl, .napped
+; 	ret
 
 .overslept
 	; ! I overslept!
