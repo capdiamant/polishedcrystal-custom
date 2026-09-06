@@ -2370,13 +2370,13 @@ _AskItemMoveText::
 
 SECTION "Text_AreYouABoyOrAreYouAGirl", ROMX
 Text_AreYouABoyOrAreYouAGirl::
-	text "Which photo is on"
-	line "your Trainer Card?"
+	text "Select profile."
+	; line ""
 	done
 
 SECTION "Text_SoThisIsYou", ROMX
 Text_SoThisIsYou::
-	text "So this is you?"
+	text "Confirm profile?"
 	done
 
 SECTION "Text_BattleUser", ROMX
@@ -3194,33 +3194,33 @@ _ElmText5::
 
 SECTION "_ElmText6", ROMX
 _ElmText6::
-	text "Please tell me"
-	line "your name."
+	text "What is your"
+	line "name?"
 	prompt
 
 SECTION "_ElmText7", ROMX
 _ElmText7::
-	text "<PLAYER>, are you"
-	line "ready?"
+	text "<PLAYER>, let's"
+	line "begin!"
 
-if !DEF(DEBUG)
-	para "Your very own"
-	line "#mon story is"
-	cont "about to unfold."
+; if !DEF(DEBUG)
+; 	para "Your very own"
+; 	line "#mon story is"
+; 	cont "about to unfold."
 
-	para "You'll face fun"
-	line "times and tough"
-	cont "challenges."
+; 	para "You'll face fun"
+; 	line "times and tough"
+; 	cont "challenges."
 
-	para "A world of dreams"
-	line "and adventures"
+; 	para "A world of dreams"
+; 	line "and adventures"
 
-	para "with #mon"
-	line "awaits! Let's go!"
-endc
+; 	para "with #mon"
+; 	line "awaits! Let's go!"
+; endc
 
-	para "I'll be seeing you"
-	line "later!"
+; 	para "I'll be seeing you"
+; 	line "later!"
 	done
 
 SECTION "_WarnVBAText", ROMX

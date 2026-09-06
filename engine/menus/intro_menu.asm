@@ -879,7 +879,7 @@ GenderMenu::
 	ret
 
 AreYouABoyOrAreYouAGirlText:
-	; Are you a boy? Or are you a girl?
+	; Which photo on trainer card
 	text_farend Text_AreYouABoyOrAreYouAGirl
 SoThisIsYouText:
 	; So this is you?
