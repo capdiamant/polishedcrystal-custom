@@ -1977,6 +1977,6 @@ BattleFactoryBattleRoom_BlockData:
 
 SECTION "NewIslandDemo_BlockData", ROMX
 NewKapal_BlockData:
-	INCBIN maps/NewKapal.ablk.lzp"
+	INCBIN "maps/NewKapal.ablk.lzp"
 
 ENDSECTION
