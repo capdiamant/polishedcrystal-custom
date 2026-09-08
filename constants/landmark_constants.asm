@@ -149,6 +149,7 @@ DEF SHAMOUTI_LANDMARK EQU const_value
 	const NAVEL_ROCK         ; 8f
 	const FARAWAY_ISLAND     ; 90
 	const NEW_KAPAL			 ; 91
+	const NEW_KAPAL_KELUAR	 ; 92
 DEF NUM_LANDMARKS EQU const_value
 
 ; used in CaughtData

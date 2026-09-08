@@ -716,6 +716,7 @@ ENDM
 	map_const ROUTE_36,                                   23,  9 ;  2
 
 	newgroup													 ; 40
-	map_const NEW_KAPAL,								  15, 10 ; 1
+	map_const NEW_KAPAL,								  15, 10 ;  1
+	map_const NEW_KAPAL_KELUAR,							  13, 15 ;  2
 
 DEF NUM_MAP_GROUPS EQU const_value ; 40

@@ -950,3 +950,4 @@ ENDM
 	map_attributes ValenciaHouse, VALENCIA_HOUSE, $0
 	map_attributes ValenciaPort, VALENCIA_PORT, $0
 	map_attributes NewKapal, NEW_KAPAL, $9
+	map_attributes NewKapalKeluar, NEW_KAPAL_KELUAR, $9

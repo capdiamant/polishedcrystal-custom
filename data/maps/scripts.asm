@@ -1088,5 +1088,6 @@ INCLUDE "maps/Route49.asm"
 SECTION "New Island Demo Scripts", ROMX
 
 INCLUDE "maps/NewKapal.asm"
+INCLUDE "maps/NewKapalKeluar.asm"
 
 ENDSECTION
