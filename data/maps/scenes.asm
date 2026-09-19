@@ -113,4 +113,5 @@ MapScenes::
 	scene_var WISE_TRIOS_ROOM,                   wWiseTriosRoomSceneID
 	scene_var YELLOW_FOREST,                     wYellowForestSceneID
 	scene_var ROCKET_HIDEOUT_B4F,                wRocketHideoutB4FSceneID
+	scene_var NEW_KAPAL,						 wAlways0SceneID
 	db -1
