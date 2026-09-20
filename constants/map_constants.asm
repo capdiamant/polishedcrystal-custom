@@ -718,5 +718,6 @@ ENDM
 	newgroup													 ; 40
 	map_const NEW_KAPAL,								  15, 10 ;  1
 	map_const NEW_KAPAL_KELUAR,							  13, 15 ;  2
+	map_const NEW_SIMPANG,								  15, 13 ;  3
 
 DEF NUM_MAP_GROUPS EQU const_value ; 40

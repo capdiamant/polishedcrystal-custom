@@ -1,11 +1,10 @@
-NewKapalKeluar_MapScriptHeader:
+NewSimpang_MapScriptHeader:
     def_scene_scripts
 
     def_callbacks
 
     def_warp_events
-    warp_event 19, 27, NEW_KAPAL, 1
-    warp_event 19,  5, NEW_SIMPANG, 1
+    warp_event 14, 19, NEW_KAPAL_KELUAR, 2
 
     def_coord_events
 
@@ -14,5 +13,3 @@ NewKapalKeluar_MapScriptHeader:
     def_object_events
 
     object_const_def
-
-    

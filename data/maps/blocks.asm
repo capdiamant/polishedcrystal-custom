@@ -1983,4 +1983,8 @@ SECTION "NewKapalKeluar_BlockData", ROMX
 NewKapalKeluar_BlockData:
 	INCBIN "maps/NewKapalKeluar.ablk.lzp"
 
+SECTION "NewSimpang_BlockData", ROMX
+NewSimpang_BlockData:
+	INCBIN "maps/NewSimpang.ablk.lzp"
+
 ENDSECTION

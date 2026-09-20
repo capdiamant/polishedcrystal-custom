@@ -951,3 +951,4 @@ ENDM
 	map_attributes ValenciaPort, VALENCIA_PORT, $0
 	map_attributes NewKapal, NEW_KAPAL, $9
 	map_attributes NewKapalKeluar, NEW_KAPAL_KELUAR, $9
+	map_attributes NewSimpang, NEW_SIMPANG, $45		; tukar bila dah ada map sebelah

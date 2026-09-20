@@ -1089,5 +1089,6 @@ SECTION "New Island Demo Scripts", ROMX
 
 INCLUDE "maps/NewKapal.asm"
 INCLUDE "maps/NewKapalKeluar.asm"
+INCLUDE "maps/NewSimpang.asm"
 
 ENDSECTION
