@@ -151,6 +151,7 @@ DEF SHAMOUTI_LANDMARK EQU const_value
 	const NEW_KAPAL			 ; 91
 	const NEW_KAPAL_KELUAR	 ; 92
 	const NEW_SIMPANG        ; 93
+	const NEW_STARTER_ROOM	 ; 94
 DEF NUM_LANDMARKS EQU const_value
 
 ; used in CaughtData

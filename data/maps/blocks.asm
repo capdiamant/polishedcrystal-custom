@@ -1987,4 +1987,8 @@ SECTION "NewSimpang_BlockData", ROMX
 NewSimpang_BlockData:
 	INCBIN "maps/NewSimpang.ablk.lzp"
 
+SECTION "NewStarterRoom_BlockData", ROMX
+NewStarterRoom_BlockData:
+	INCBIN "maps/NewStarterRoom.ablk.lzp"
+
 ENDSECTION

@@ -155,6 +155,7 @@ Landmarks:
 	landmark  20,  20, NewKapalName
 	landmark  20,  30, NewKapalKeluarName
 	landmark  20,  40, NewSimpangName
+	landmark  20,  50, NewStarterRoomName
 	assert_table_length NUM_LANDMARKS
 
 NewBarkTownName:       rawchar "New Bark¯Town@"
@@ -304,4 +305,5 @@ CinnabarLabName:       rawchar "Pokémon¯Lab@"
 NewKapalName:		   rawchar "New¯Kapal@"
 NewKapalKeluarName:	   rawchar "New¯Kapal¯Keluar@"
 NewSimpangName:	       rawchar "New¯Simpang@"
+NewStarterRoomName:    rawchar "New¯Starter¯Room@"
 SpecialMapName:        rawchar "?@"

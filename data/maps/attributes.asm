@@ -952,3 +952,4 @@ ENDM
 	map_attributes NewKapal, NEW_KAPAL, $9
 	map_attributes NewKapalKeluar, NEW_KAPAL_KELUAR, $9
 	map_attributes NewSimpang, NEW_SIMPANG, $45		; tukar bila dah ada map sebelah
+	map_attributes NewStarterRoom, NEW_STARTER_ROOM, $0

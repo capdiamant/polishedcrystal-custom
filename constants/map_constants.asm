@@ -719,5 +719,6 @@ ENDM
 	map_const NEW_KAPAL,								  15, 10 ;  1
 	map_const NEW_KAPAL_KELUAR,							  13, 15 ;  2
 	map_const NEW_SIMPANG,								  15, 13 ;  3
+	map_const NEW_STARTER_ROOM,							   9,  9 ;  4
 
 DEF NUM_MAP_GROUPS EQU const_value ; 40
