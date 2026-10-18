@@ -1,30 +1,30 @@
-if DEF(FAITHFUL)
+; if DEF(FAITHFUL)
 	bst 490,  75,  80,  95,  90, 100,  50
 	;   bst   hp  atk  def  sat  sdf  spe
-else
-	bst 510,  75,  80,  95, 100, 110,  50
+; else
+; 	bst 510,  75,  80,  95, 100, 110,  50
 	;   bst   hp  atk  def  sat  sdf  spe
-endc
+; endc
 
-if DEF(FAITHFUL)
+; if DEF(FAITHFUL)
 	db GRASS, GRASS ; type
-else
-	db GRASS, FAIRY ; type
-endc
+; else
+	; db GRASS, FAIRY ; type
+; endc
 	db 45 ; catch rate
-if DEF(FAITHFUL)
+; if DEF(FAITHFUL)
 	db 184 ; base exp
-else
-	db 192 ; base exp
-endc
+; else
+; 	db 192 ; base exp
+; endc
 	db NO_ITEM, MIRACLE_SEED ; held items
 	dn GENDER_F50, HATCH_MEDIUM_FAST ; gender ratio, step cycles to hatch
 
-if DEF(FAITHFUL)
+; if DEF(FAITHFUL)
 	abilities_for BELLOSSOM, CHLOROPHYLL, CHLOROPHYLL, CHLOROPHYLL
-else
-	abilities_for BELLOSSOM, CHLOROPHYLL, CHLOROPHYLL, OWN_TEMPO
-endc
+; else
+; 	abilities_for BELLOSSOM, CHLOROPHYLL, CHLOROPHYLL, OWN_TEMPO
+; endc
 	db GROWTH_MEDIUM_SLOW ; growth rate
 	dn EGG_PLANT, EGG_PLANT ; egg groups
 

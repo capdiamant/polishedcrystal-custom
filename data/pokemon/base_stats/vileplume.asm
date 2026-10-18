@@ -1,18 +1,18 @@
-if DEF(FAITHFUL)
+; if DEF(FAITHFUL)
 	bst 490,  75,  80,  85, 110,  90,  50
 	;   bst   hp  atk  def  sat  sdf  spe
-else
-	bst 510,  75,  80,  85, 120, 100,  50
-	;   bst   hp  atk  def  sat  sdf  spe
-endc
+; else
+; 	bst 510,  75,  80,  85, 120, 100,  50
+; 	;   bst   hp  atk  def  sat  sdf  spe
+; endc
 
 	db GRASS, POISON ; type
 	db 45 ; catch rate
-if DEF(FAITHFUL)
+; if DEF(FAITHFUL)
 	db 184 ; base exp
-else
-	db 192 ; base exp
-endc
+; else
+; 	db 192 ; base exp
+; endc
 	db ALWAYS_ITEM_2, MIRACLE_SEED ; held items
 	dn GENDER_F50, HATCH_MEDIUM_FAST ; gender ratio, step cycles to hatch
 
